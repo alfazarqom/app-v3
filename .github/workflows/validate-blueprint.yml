@@ -2,28 +2,50 @@ name: Validate Blueprint and Mock Data
 
 on:
   push:
-    paths: ["blueprint.json", "mock/**", "schemas/**", "scripts/validate-blueprint.mjs", ".github/workflows/validate-blueprint.yml"]
+    paths:
+      - "blueprint.json"
+      - "mock/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/validate-blueprint.yml"
   pull_request:
-    paths: ["blueprint.json", "mock/**", "schemas/**", "scripts/validate-blueprint.mjs", ".github/workflows/validate-blueprint.yml"]
+    paths:
+      - "blueprint.json"
+      - "mock/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/validate-blueprint.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: blueprint-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
-      - name: Validate JSON Schemas
-        run: |
-          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/blueprint.schema.json -d blueprint.json
-          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/mock-user.schema.json -d mock/user.json
-          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/mock-products.schema.json -d mock/products.json
-      - name: Validate cross-file contracts
-        run: node scripts/validate-blueprint.mjs
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Validate JSON Schemas and cross-file contracts
+        run: npm run validate
+      - name: Run positive and negative tests
+        run: npm test
