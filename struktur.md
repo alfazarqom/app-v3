@@ -41,7 +41,8 @@ App
 │   ├── HelpCenterPage
 │   ├── ReviewPage
 │   ├── TermsPage
-│   └── PrivacyPolicyPage
+│   ├── PrivacyPolicyPage
+│   └── BottomAction
 │
 └── Overlays
     ├── NotificationPanel
