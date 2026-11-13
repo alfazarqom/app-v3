@@ -1,0 +1,13 @@
+{
+  "name": "app-v3-blueprint-governance",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "ajv validate --spec=draft2020 -s schemas/blueprint.schema.json -d blueprint.json && ajv validate --spec=draft2020 -s schemas/mock-user.schema.json -d mock/user.json && ajv validate --spec=draft2020 -s schemas/mock-products.schema.json -d mock/products.json && node scripts/validate-blueprint.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@jirutka/ajv-cli": "6.0.0"
+  }
+}
