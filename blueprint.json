@@ -1,7 +1,7 @@
 {
   "blueprint": {
     "name": "Travel & Tours",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "status": "final-blueprint",
     "source": "blueprint.json",
     "platform": "mobile-only",
@@ -10,8 +10,8 @@
     "language": "TypeScript",
     "documentType": "application-specific-blueprint",
     "validationStatus": "blueprint-structure-validated",
-    "revision": "1.1.0",
-    "previousRevision": "1.0.0"
+    "revision": "1.2.0",
+    "previousRevision": "1.1.0"
   },
   "App": {
     "component": "App",
@@ -34,10 +34,10 @@
         "view": "AppLoadingState"
       },
       "authenticated": {
-        "view": "AppShell"
+        "view": "route-driven"
       },
       "guest": {
-        "view": "AppShell"
+        "view": "route-driven"
       },
       "unauthenticated": {
         "view": "route-driven",
@@ -53,31 +53,40 @@
       "enabled": true,
       "action": "ContinueAsGuest",
       "destination": "AppShell",
-      "accessPolicy": "public-routes-only"
+      "accessPolicy": "public-and-guest-allowed-routes-only",
+      "allowedAccessLevels": [
+        "public",
+        "guest-allowed"
+      ]
     },
     "layoutSelection": {
-      "strategy": "route-and-session-driven",
+      "strategy": "route-classification-and-session-access-driven",
       "precedence": [
         "resolve-session-state",
         "match-current-route",
         "validate-dynamic-route-parameters",
         "enforce-route-access-policy",
+        "classify-route-layout",
         "select-layout-from-route-and-session",
         "render-single-active-page"
       ],
       "rules": {
         "resolving": "AppLoadingState",
-        "unauthenticatedDefault": "AuthScreen",
+        "authenticatedAppShellRoute": "AppShell",
+        "authenticatedStandaloneRoute": "StandalonePages",
+        "guestAppShellRoute": "AppShell",
+        "guestStandaloneRoute": "StandalonePages",
+        "unauthenticatedEntryRoute": "AuthScreen",
         "unauthenticatedPublicStandaloneRoute": "StandalonePages",
-        "authenticatedOrGuestStandaloneRoute": "StandalonePages",
-        "authenticatedOrGuestAppShellRoute": "AppShell",
+        "unauthenticatedAuthEntryRoute": "AuthScreen",
         "deniedRoute": "configured-access-denied-behavior",
         "unknownRoute": "NotFoundPage"
       },
       "authScreen": "default-view-for-unauthenticated-entry",
       "appShell": "for-registered-app-shell-routes-when-session-or-guest-access-is-valid",
       "standalonePages": "for-registered-standalone-routes-when-route-access-is-valid",
-      "unknownRoute": "NotFoundPage"
+      "unknownRoute": "NotFoundPage",
+      "sessionStateDoesNotForceLayout": true
     }
   },
   "AuthScreen": {
@@ -306,7 +315,61 @@
     },
     "dynamicParameters": {
       "enabled": true,
-      "validation": "validate-required-route-parameters-before-page-render"
+      "validation": "validate-required-route-parameters-before-page-render",
+      "contract": {
+        "parameterNamesMustMatchRoute": true,
+        "required": true,
+        "valueType": "string",
+        "trimWhitespace": true,
+        "rejectEmpty": true,
+        "rejectMalformedUrlEncoding": true,
+        "decodeBeforeValidation": true,
+        "renderBeforeValidation": false
+      },
+      "invalidParameterBehavior": {
+        "component": "NotFoundPage",
+        "layout": "StandalonePage",
+        "renderTargetPage": false,
+        "preserveSafeNavigation": true
+      },
+      "routeParameters": [
+        {
+          "route": "/destinations/:destinationId",
+          "parameters": [
+            {
+              "name": "destinationId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        },
+        {
+          "route": "/tours/:tourId",
+          "parameters": [
+            {
+              "name": "tourId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        },
+        {
+          "route": "/bookings/:bookingId",
+          "parameters": [
+            {
+              "name": "bookingId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        }
+      ]
     },
     "navigation": {
       "preserveUrl": true,
@@ -314,19 +377,21 @@
       "activeRouteDrivesBottomNav": true
     },
     "accessPolicy": {
-      "default": "public",
+      "default": null,
       "allowedValues": [
         "public",
         "guest-allowed",
         "authenticated"
       ],
-      "routeDeclaration": "every-registered-route-declares-access",
+      "routeDeclaration": "every-registered-route-must-explicitly-declare-access; missing-or-invalid-access-fails-validation",
       "guest": "public-and-guest-allowed-routes-only",
       "protectedRoutes": [],
       "protectedRouteBehavior": "deny-before-layout-render",
-      "unauthenticatedBehavior": "show-auth-screen-for-auth-entry-or-default-entry; allow-public-standalone-routes",
+      "unauthenticatedBehavior": "allow-public-routes-only; show-auth-screen-for-entry-or-auth-route",
       "deniedRouteBehavior": "redirect-to-auth-screen",
-      "accessEvaluationOrder": "before-layout-selection-and-page-render"
+      "accessEvaluationOrder": "before-layout-selection-and-page-render",
+      "missingAccessBehavior": "reject-route-registration-and-do-not-render",
+      "invalidAccessBehavior": "reject-route-registration-and-do-not-render"
     },
     "resolutionOrder": [
       "resolve-session-state",
@@ -346,6 +411,39 @@
         "GoBack"
       ],
       "access": "public"
+    },
+    "entryRoute": {
+      "route": "/",
+      "authenticated": {
+        "component": "HomePage",
+        "layout": "AppShell"
+      },
+      "guest": {
+        "component": "HomePage",
+        "layout": "AppShell"
+      },
+      "unauthenticated": {
+        "component": "AuthScreen",
+        "layout": "AuthScreen"
+      },
+      "rationale": "Unauthenticated root entry resolves to AuthScreen; authenticated and guest sessions resolve to HomePage."
+    },
+    "layoutResolution": {
+      "strategy": "route-classification-and-session-access-driven",
+      "sessionStateDoesNotForceLayout": true,
+      "appShellRoutes": "registered-app-shell-routes-only",
+      "standaloneRoutes": "registered-standalone-routes-only",
+      "selectionOrder": [
+        "resolve-session",
+        "match-route",
+        "validate-route-parameters",
+        "evaluate-access",
+        "classify-route-layout",
+        "select-layout",
+        "render-single-active-page"
+      ],
+      "unauthenticatedEntryBehavior": "AuthScreen",
+      "unknownRouteBehavior": "NotFoundPage"
     }
   },
   "Navigation": {
@@ -528,7 +626,7 @@
     }
   },
   "Requirements": {
-    "baseline": "v1.1.0",
+    "baseline": "v1.2.0",
     "items": [
       {
         "id": "F-01",
@@ -672,9 +770,63 @@
           "Child components do not apply duplicate safe-area insets.",
           "Safe-area behavior is consistent across AppShell and StandalonePages."
         ]
+      },
+      {
+        "id": "F-14",
+        "name": "Deterministic Entry Routing",
+        "acceptanceCriteria": [
+          "The root entry route / resolves to HomePage in AppShell for authenticated users.",
+          "The root entry route / resolves to HomePage in AppShell for guest users.",
+          "The root entry route / resolves to AuthScreen for unauthenticated users.",
+          "Unauthenticated users may render registered public StandalonePages routes without being forced into AppShell.",
+          "Entry route behavior is explicitly defined and does not depend on implicit router defaults."
+        ]
+      },
+      {
+        "id": "F-15",
+        "name": "Unified Guest Access Policy",
+        "acceptanceCriteria": [
+          "App guest access and Routing access policy use the same allowed access levels.",
+          "Guest users may access public and guest-allowed routes only.",
+          "Guest users are denied authenticated routes before layout selection or page rendering.",
+          "No conflicting guest access policy strings exist in the blueprint."
+        ]
+      },
+      {
+        "id": "F-16",
+        "name": "Explicit Route Access Declaration",
+        "acceptanceCriteria": [
+          "Every registered route explicitly declares one supported access level.",
+          "Missing access declarations fail route registration or blueprint validation.",
+          "Invalid access values fail route registration or blueprint validation.",
+          "No implicit public access is granted to routes with missing access declarations."
+        ]
+      },
+      {
+        "id": "F-17",
+        "name": "Dynamic Route Parameter Contract",
+        "acceptanceCriteria": [
+          "Every dynamic route declares its required parameter names and validation rules.",
+          "Required parameters are decoded and validated before the target page renders.",
+          "Empty, whitespace-only, missing, or malformed encoded parameter values are rejected.",
+          "Invalid dynamic parameters render NotFoundPage and never render the target page.",
+          "Dynamic parameter names match the corresponding route template."
+        ]
+      },
+      {
+        "id": "F-18",
+        "name": "Route-Driven Layout Resolution",
+        "acceptanceCriteria": [
+          "Authenticated, guest, and unauthenticated session states do not independently force one layout for every route.",
+          "The matched route classification and evaluated access policy determine the eligible layout.",
+          "Registered AppShell routes render in AppShell when access is allowed.",
+          "Registered standalone routes render in StandalonePages when access is allowed.",
+          "Access denial occurs before layout selection and page rendering.",
+          "Exactly one active page is rendered after layout resolution."
+        ]
       }
     ],
-    "previousBaseline": "v1.0.0"
+    "previousBaseline": "v1.1.0"
   },
   "Scope": {
     "included": [
@@ -692,7 +844,12 @@
       "single-active-page-rendering",
       "route-level-access-policy",
       "deterministic-session-layout-selection",
-      "centralized-safe-area-ownership"
+      "centralized-safe-area-ownership",
+      "deterministic-entry-route-resolution",
+      "unified-guest-access-policy",
+      "fail-closed-explicit-route-access-declaration",
+      "dynamic-route-parameter-validation-contract",
+      "route-driven-layout-resolution"
     ],
     "excluded": [
       "authentication-provider-integration",
