@@ -60,6 +60,18 @@
         },
         "previousRevision": {
           "const": "1.3.0"
+        },
+        "source": {
+          "type": "string",
+          "const": "blueprint.json"
+        },
+        "documentType": {
+          "type": "string",
+          "const": "application-specific-blueprint"
+        },
+        "validationStatus": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false
@@ -94,6 +106,12 @@
             },
             "accessPolicy": {
               "const": "public-and-guest-allowed-routes-only"
+            },
+            "action": {
+              "const": "ContinueAsGuest"
+            },
+            "destination": {
+              "const": "AppShell"
             }
           },
           "additionalProperties": false
@@ -282,6 +300,9 @@
         },
         "deploymentApproval": {
           "const": "separate-explicit-approval"
+        },
+        "mockCredentialPolicy": {
+          "const": "mock-fixtures-never-used-for-production-authentication"
         }
       },
       "additionalProperties": false
