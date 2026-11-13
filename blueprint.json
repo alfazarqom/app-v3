@@ -1,10 +1,10 @@
-
 {
   "App": {
     "name": "Travel & Tours",
     "platform": "Mobile App",
     "layout": "MobileFirst",
-    "root": "AppShell"
+    "root": "AppShell",
+    "standalonePages": "StandalonePages"
   },
   "AppShell": {
     "component": "AppShell",
@@ -97,6 +97,64 @@
             "route": "/live-chat"
           }
         ]
+      },
+      {
+        "id": "overlays",
+        "component": "Overlays",
+        "children": []
+      }
+    ]
+  },
+  "StandalonePages": {
+    "component": "StandalonePages",
+    "layout": {
+      "type": "vertical",
+      "children": [
+        "Header",
+        "Content",
+        "BottomAction"
+      ]
+    },
+    "pages": [
+      {
+        "id": "destination-detail-page",
+        "component": "DestinationDetailPage",
+        "route": "/destinations/:destinationId"
+      },
+      {
+        "id": "tour-detail-page",
+        "component": "TourDetailPage",
+        "route": "/tours/:tourId"
+      },
+      {
+        "id": "search-results-page",
+        "component": "SearchResultsPage",
+        "route": "/search"
+      },
+      {
+        "id": "booking-page",
+        "component": "BookingPage",
+        "route": "/booking"
+      },
+      {
+        "id": "checkout-page",
+        "component": "CheckoutPage",
+        "route": "/checkout"
+      },
+      {
+        "id": "booking-confirmation-page",
+        "component": "BookingConfirmationPage",
+        "route": "/booking/confirmation"
+      },
+      {
+        "id": "booking-history-page",
+        "component": "BookingHistoryPage",
+        "route": "/bookings"
+      },
+      {
+        "id": "booking-detail-page",
+        "component": "BookingDetailPage",
+        "route": "/bookings/:bookingId"
       }
     ]
   },
@@ -111,11 +169,56 @@
       "Logo": "HomePage",
       "NotifBtn": "NotificationPage",
       "ProfileBtn": "ProfilePage"
-    }
+    },
+    "standalonePageNavigation": "RouteBased"
   },
   "DesignSystem": {
     "style": "Modern Premium Travel",
     "theme": "Light",
+    "layout": {
+      "platform": "mobile-only",
+      "orientation": "portrait",
+      "appShell": {
+        "display": "flex",
+        "direction": "column",
+        "width": "100%",
+        "height": "100%",
+        "overflow": "hidden"
+      },
+      "header": {
+        "position": "top",
+        "flexShrink": 0
+      },
+      "content": {
+        "flex": 1,
+        "minHeight": 0,
+        "overflowY": "auto"
+      },
+      "bottomNav": {
+        "position": "bottom",
+        "flexShrink": 0
+      },
+      "standalonePage": {
+        "display": "flex",
+        "direction": "column",
+        "height": "100%",
+        "header": {
+          "flexShrink": 0
+        },
+        "content": {
+          "flex": 1,
+          "minHeight": 0,
+          "overflowY": "auto"
+        },
+        "bottomAction": {
+          "flexShrink": 0
+        }
+      },
+      "overlays": {
+        "layer": "above-app-shell"
+      },
+      "safeArea": true
+    },
     "primaryColor": "#0F766E",
     "backgroundColor": "#FFFFFF",
     "surfaceColor": "#F8FAFC",
