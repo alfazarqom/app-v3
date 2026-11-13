@@ -1,29 +1,16 @@
 import { readFileSync } from "node:fs";
-const readJson=(path)=>JSON.parse(readFileSync(new URL(path,import.meta.url),"utf8"));
-const blueprint=readJson("../blueprint.json"), users=readJson("../mock/user.json"), products=readJson("../mock/products.json");
-const errors=[], check=(ok,msg)=>{if(!ok)errors.push(msg);}, unique=(a)=>new Set(a).size===a.length;
-const appContent=blueprint.AppShell.children.find(x=>x.component==="Content");
-const routes=[...appContent.children.map(({route,access,component})=>({route,access,component})),...blueprint.StandalonePages.pages.map(({route,access,component})=>({route,access,component})),blueprint.Routing.fallback];
-const refs=new Set(), collect=(v)=>{if(Array.isArray(v))return v.forEach(collect);if(!v||typeof v!=="object")return;if(typeof v.component==="string")refs.add(v.component);Object.values(v).forEach(collect);};collect(blueprint);
-const registry=new Set(blueprint.ComponentRegistry.registeredComponents);
-check(blueprint.blueprint.version==="1.3.0","Blueprint version must be 1.3.0.");
-check(blueprint.Requirements.items.length===24,"Exactly 24 requirements (F-01 through F-24) are required.");
-const ids=blueprint.Requirements.items.map(x=>x.id);check(unique(ids),"Requirement IDs must be unique.");
-for(const x of blueprint.Requirements.items)check(Array.isArray(x.acceptanceCriteria)&&x.acceptanceCriteria.length>0,x.id+" must have acceptance criteria.");
-for(const ref of refs)check(registry.has(ref),"Unregistered component reference: "+ref);
-check(unique(routes.map(x=>x.route)),"Registered route paths must be unique.");
-for(const route of routes)check(["public","guest-allowed","authenticated"].includes(route.access),"Route "+route.route+" has missing or invalid access.");
-check(JSON.stringify(blueprint.App.guestAccess.allowedAccessLevels)===JSON.stringify(["public","guest-allowed"]),"App guest access levels are inconsistent.");
-check(blueprint.Routing.accessPolicy.guest===blueprint.App.guestAccess.accessPolicy,"App and Routing guest policies must match.");
-check(blueprint.DesignSystem.layout.safeAreaPolicy.owner==="application-layout","Application layout must own safe-area handling.");
-check(blueprint.DesignSystem.layout.safeAreaPolicy.prohibitDuplicateInsets===true,"Duplicate safe-area insets must be prohibited.");
-check(blueprint.DesignSystem.layout.safeAreaPolicy.childSafeAreaAwareSemantics.includes("consume-layout-provided-insets"),"Child safe-area semantics must require consuming layout-provided insets.");
-check(users.fixtureMetadata?.classification==="mock-only"&&users.fixtureMetadata?.notForProduction===true,"User fixture must be marked mock-only and not-for-production.");
-check(unique(users.users.map(x=>x.id)),"Mock user IDs must be unique.");
-check(users.users.some(x=>x.isGuest===true&&x.authProvider==="guest"&&x.credentials===null),"Credential-free Guest fixture is required.");
-check(users.users.some(x=>x.isGuest===false&&x.authProvider==="phone"&&typeof x.phone==="string"&&typeof x.credentials?.password==="string"),"Phone-and-password authenticated fixture is required.");
-check(products.fixtureMetadata?.classification==="mock-only"&&products.fixtureMetadata?.notForProduction===true,"Product fixture must be marked mock-only and not-for-production.");
-check(products.fixtureMetadata?.imageAssets==="placeholder-only","Product images must be identified as placeholders.");
-check(unique(products.products.map(x=>x.id)),"Mock product IDs must be unique.");
-check(products.products.every(x=>x.type==="tour"&&x.price?.currency==="IDR"),"All mock products must be IDR tours.");
-if(errors.length){console.error("Blueprint validation failed:");for(const e of errors)console.error("- "+e);process.exitCode=1;}else console.log("Blueprint validation passed: "+ids.length+" requirements, "+registry.size+" registered components, "+routes.length+" routes, "+users.users.length+" mock users, "+products.products.length+" mock products.");
+import { validateContracts } from "./blueprint-validator-lib.mjs";
+
+const readJson = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
+const errors = validateContracts({
+  blueprint: readJson("../blueprint.json"),
+  users: readJson("../mock/user.json"),
+  products: readJson("../mock/products.json")
+});
+if (errors.length) {
+  console.error("Blueprint validation failed:");
+  for (const error of errors) console.error("- " + error);
+  process.exitCode = 1;
+} else {
+  console.log("Blueprint validation passed: F-01..F-29, registered routes, ownership policy, mock users, and tour products.");
+}

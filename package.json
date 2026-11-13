@@ -1,0 +1,14 @@
+{
+  "name": "app-v3-blueprint-governance",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-schemas.mjs && node scripts/validate-blueprint.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@jirutka/ajv-cli": "6.0.0",
+    "ajv": "8.20.0"
+  }
+}
