@@ -1,0 +1,131 @@
+
+{
+  "App": {
+    "name": "Travel & Tours",
+    "platform": "Mobile App",
+    "layout": "MobileFirst",
+    "root": "AppShell"
+  },
+  "AppShell": {
+    "component": "AppShell",
+    "layout": "vertical",
+    "children": [
+      {
+        "id": "header",
+        "component": "Header",
+        "position": "top",
+        "children": [
+          {
+            "id": "logo",
+            "component": "Logo",
+            "action": "NavigateHome"
+          },
+          {
+            "id": "header-actions",
+            "component": "HeaderActions",
+            "children": [
+              {
+                "id": "notif-btn",
+                "component": "NotifBtn",
+                "icon": "bell",
+                "action": "NavigateNotificationPage"
+              },
+              {
+                "id": "profile-btn",
+                "component": "ProfileBtn",
+                "icon": "user-round",
+                "action": "NavigateProfilePage"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "content",
+        "component": "Content",
+        "flex": 1,
+        "scrollable": true,
+        "children": [
+          {
+            "id": "home-page",
+            "component": "HomePage",
+            "route": "/"
+          },
+          {
+            "id": "explore-page",
+            "component": "ExplorePage",
+            "route": "/explore"
+          },
+          {
+            "id": "livechat-page",
+            "component": "LiveChatPage",
+            "route": "/live-chat"
+          },
+          {
+            "id": "profile-page",
+            "component": "ProfilePage",
+            "route": "/profile"
+          },
+          {
+            "id": "notification-page",
+            "component": "NotificationPage",
+            "route": "/notifications"
+          }
+        ]
+      },
+      {
+        "id": "bottom-nav",
+        "component": "BottomNav",
+        "position": "bottom",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "house",
+            "route": "/"
+          },
+          {
+            "id": "explore",
+            "label": "Explore",
+            "icon": "compass",
+            "route": "/explore"
+          },
+          {
+            "id": "livechat",
+            "label": "Live Chat",
+            "icon": "message-circle",
+            "route": "/live-chat"
+          }
+        ]
+      }
+    ]
+  },
+  "Navigation": {
+    "defaultPage": "HomePage",
+    "bottomNavPages": [
+      "HomePage",
+      "ExplorePage",
+      "LiveChatPage"
+    ],
+    "headerNavigation": {
+      "Logo": "HomePage",
+      "NotifBtn": "NotificationPage",
+      "ProfileBtn": "ProfilePage"
+    }
+  },
+  "DesignSystem": {
+    "style": "Modern Premium Travel",
+    "theme": "Light",
+    "primaryColor": "#0F766E",
+    "backgroundColor": "#FFFFFF",
+    "surfaceColor": "#F8FAFC",
+    "borderRadius": "16px",
+    "spacing": "8px",
+    "mobile": {
+      "referenceWidth": 390,
+      "minimumWidth": 320,
+      "safeArea": true,
+      "navigationHeight": "64px"
+    }
+  }
+}
