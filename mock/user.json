@@ -1,14 +1,37 @@
 {
   "users": [
     {
-      "id": "usr_001",
+      "id": "usr_guest_001",
+      "name": "Guest User",
+      "phone": null,
+      "avatarUrl": "https://placehold.co/200x200",
+      "role": "guest",
+      "authProvider": "guest",
+      "isGuest": true,
+      "credentials": null,
+      "status": "active",
+      "preferences": {
+        "language": "id",
+        "currency": "IDR",
+        "notifications": {
+          "email": false,
+          "push": false
+        }
+      },
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "usr_auth_001",
       "name": "Alex Morgan",
-      "email": "alex.morgan@example.com",
       "phone": "+6281234567890",
       "avatarUrl": "https://placehold.co/200x200",
       "role": "customer",
-      "authProvider": "mock",
+      "authProvider": "phone",
       "isGuest": false,
+      "credentials": {
+        "password": "MockPassword123!"
+      },
       "status": "active",
       "preferences": {
         "language": "id",
