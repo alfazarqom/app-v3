@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "usr_001",
+      "name": "Alex Morgan",
+      "email": "alex.morgan@example.com",
+      "phone": "+6281234567890",
+      "avatarUrl": "https://placehold.co/200x200",
+      "role": "customer",
+      "authProvider": "mock",
+      "isGuest": false,
+      "status": "active",
+      "preferences": {
+        "language": "id",
+        "currency": "IDR",
+        "notifications": {
+          "email": true,
+          "push": true
+        }
+      },
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    }
+  ]
+}
