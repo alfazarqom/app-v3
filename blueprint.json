@@ -1,19 +1,81 @@
 {
-  "App": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "blueprint": {
     "name": "Travel & Tours",
-    "platform": "Mobile App",
-    "layout": "MobileFirst",
-    "root": "AppShell",
-    "standalonePages": "StandalonePages"
+    "version": "1.0.0",
+    "status": "approved-baseline",
+    "source": "blueprint.json",
+    "platform": "mobile-only",
+    "orientation": "portrait",
+    "framework": "React",
+    "language": "TypeScript"
+  },
+  "App": {
+    "component": "App",
+    "root": true,
+    "responsibilities": [
+      "application-entry",
+      "session-state-resolution",
+      "route-resolution",
+      "layout-selection",
+      "overlay-host"
+    ],
+    "children": [
+      "AuthScreen",
+      "AppShell",
+      "StandalonePages",
+      "Overlays"
+    ],
+    "states": {
+      "resolving": {
+        "view": "AppLoadingState"
+      },
+      "authenticated": {
+        "view": "AppShell"
+      },
+      "guest": {
+        "view": "AppShell"
+      },
+      "unauthenticated": {
+        "view": "AuthScreen"
+      }
+    },
+    "guestAccess": {
+      "enabled": true,
+      "action": "ContinueAsGuest",
+      "destination": "AppShell",
+      "accessPolicy": "public-routes-only"
+    }
+  },
+  "AuthScreen": {
+    "component": "AuthScreen",
+    "layout": "standalone",
+    "children": [
+      {
+        "id": "login",
+        "component": "Login",
+        "action": "StartAuthentication"
+      },
+      {
+        "id": "guest",
+        "component": "Guest",
+        "action": "ContinueAsGuest"
+      }
+    ]
   },
   "AppShell": {
     "component": "AppShell",
     "layout": "vertical",
+    "responsibilities": [
+      "primary-navigation-layout",
+      "shared-page-chrome"
+    ],
     "children": [
       {
         "id": "header",
         "component": "Header",
         "position": "top",
+        "flexShrink": 0,
         "children": [
           {
             "id": "logo",
@@ -44,6 +106,7 @@
         "id": "content",
         "component": "Content",
         "flex": 1,
+        "minHeight": 0,
         "scrollable": true,
         "children": [
           {
@@ -77,6 +140,8 @@
         "id": "bottom-nav",
         "component": "BottomNav",
         "position": "bottom",
+        "flexShrink": 0,
+        "visibility": "app-shell-only",
         "items": [
           {
             "id": "home",
@@ -97,11 +162,6 @@
             "route": "/live-chat"
           }
         ]
-      },
-      {
-        "id": "overlays",
-        "component": "Overlays",
-        "children": []
       }
     ]
   },
@@ -109,54 +169,101 @@
     "component": "StandalonePages",
     "layout": {
       "type": "vertical",
-      "children": [
-        "Header",
-        "Content",
-        "BottomAction"
-      ]
+      "slots": [
+        {
+          "component": "Header",
+          "required": false,
+          "flexShrink": 0
+        },
+        {
+          "component": "Content",
+          "required": true,
+          "flex": 1,
+          "minHeight": 0,
+          "overflowY": "auto"
+        },
+        {
+          "component": "BottomAction",
+          "required": false,
+          "flexShrink": 0
+        }
+      ],
+      "bottomNav": false
     },
     "pages": [
       {
         "id": "destination-detail-page",
         "component": "DestinationDetailPage",
-        "route": "/destinations/:destinationId"
+        "route": "/destinations/:destinationId",
+        "layout": "StandalonePage"
       },
       {
         "id": "tour-detail-page",
         "component": "TourDetailPage",
-        "route": "/tours/:tourId"
+        "route": "/tours/:tourId",
+        "layout": "StandalonePage"
       },
       {
         "id": "search-results-page",
         "component": "SearchResultsPage",
-        "route": "/search"
+        "route": "/search",
+        "layout": "StandalonePage"
       },
       {
         "id": "booking-page",
         "component": "BookingPage",
-        "route": "/booking"
+        "route": "/booking",
+        "layout": "StandalonePage"
       },
       {
         "id": "checkout-page",
         "component": "CheckoutPage",
-        "route": "/checkout"
+        "route": "/checkout",
+        "layout": "StandalonePage"
       },
       {
         "id": "booking-confirmation-page",
         "component": "BookingConfirmationPage",
-        "route": "/booking/confirmation"
+        "route": "/booking/confirmation",
+        "layout": "StandalonePage"
       },
       {
         "id": "booking-history-page",
         "component": "BookingHistoryPage",
-        "route": "/bookings"
+        "route": "/bookings",
+        "layout": "StandalonePage"
       },
       {
         "id": "booking-detail-page",
         "component": "BookingDetailPage",
-        "route": "/bookings/:bookingId"
+        "route": "/bookings/:bookingId",
+        "layout": "StandalonePage"
       }
     ]
+  },
+  "Routing": {
+    "strategy": "route-based",
+    "defaultRoute": "/",
+    "defaultPage": "HomePage",
+    "unknownRoute": {
+      "component": "NotFoundPage",
+      "layout": "StandalonePage"
+    },
+    "dynamicParameters": {
+      "enabled": true,
+      "validation": "validate-required-route-parameters-before-page-render"
+    },
+    "navigation": {
+      "preserveUrl": true,
+      "activeRouteDrivesPage": true,
+      "activeRouteDrivesBottomNav": true
+    },
+    "accessPolicy": {
+      "default": "public",
+      "guest": "public-routes-only",
+      "protectedRoutes": [],
+      "protectedRouteBehavior": "redirect-to-auth-screen"
+    }
   },
   "Navigation": {
     "defaultPage": "HomePage",
@@ -170,14 +277,60 @@
       "NotifBtn": "NotificationPage",
       "ProfileBtn": "ProfilePage"
     },
-    "standalonePageNavigation": "RouteBased"
+    "standalonePageNavigation": "RouteBased",
+    "bottomNavVisibility": {
+      "AppShell": true,
+      "StandalonePages": false,
+      "AuthScreen": false
+    }
+  },
+  "Overlays": {
+    "component": "Overlays",
+    "host": "App",
+    "layer": "above-current-layout",
+    "components": [
+      {
+        "id": "modal",
+        "component": "Modal",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "bottom-sheet",
+        "component": "BottomSheet",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "drawer",
+        "component": "Drawer",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "toast",
+        "component": "Toast",
+        "enabled": true,
+        "dismissible": false,
+        "behavior": "temporary-notification"
+      }
+    ],
+    "stateManagement": "centralized",
+    "inactiveInteraction": false
   },
   "DesignSystem": {
     "style": "Modern Premium Travel",
     "theme": "Light",
+    "platform": "mobile-only",
+    "orientation": "portrait",
+    "tokens": {
+      "primaryColor": "#0F766E",
+      "backgroundColor": "#FFFFFF",
+      "surfaceColor": "#F8FAFC",
+      "borderRadius": "16px",
+      "spacing": "8px"
+    },
     "layout": {
-      "platform": "mobile-only",
-      "orientation": "portrait",
       "appShell": {
         "display": "flex",
         "direction": "column",
@@ -186,7 +339,6 @@
         "overflow": "hidden"
       },
       "header": {
-        "position": "top",
         "flexShrink": 0
       },
       "content": {
@@ -195,8 +347,8 @@
         "overflowY": "auto"
       },
       "bottomNav": {
-        "position": "bottom",
-        "flexShrink": 0
+        "flexShrink": 0,
+        "safeAreaAware": true
       },
       "standalonePage": {
         "display": "flex",
@@ -211,24 +363,171 @@
           "overflowY": "auto"
         },
         "bottomAction": {
-          "flexShrink": 0
+          "flexShrink": 0,
+          "safeAreaAware": true
         }
       },
       "overlays": {
-        "layer": "above-app-shell"
+        "layer": "above-current-layout"
       },
       "safeArea": true
     },
-    "primaryColor": "#0F766E",
-    "backgroundColor": "#FFFFFF",
-    "surfaceColor": "#F8FAFC",
-    "borderRadius": "16px",
-    "spacing": "8px",
     "mobile": {
       "referenceWidth": 390,
       "minimumWidth": 320,
+      "navigationHeight": "64px",
       "safeArea": true,
-      "navigationHeight": "64px"
+      "horizontalOverflow": false
     }
+  },
+  "TechnicalStandards": {
+    "framework": "React",
+    "language": "TypeScript",
+    "componentModel": "functional-components",
+    "typeSafety": {
+      "strict": true,
+      "avoidAny": true,
+      "documentExceptions": true
+    },
+    "architecture": {
+      "reusableComponents": true,
+      "centralizedRouting": true,
+      "centralizedLayout": true,
+      "centralizedOverlayManagement": true,
+      "explicitComponentContracts": true
+    },
+    "uiStates": [
+      "loading",
+      "error",
+      "empty"
+    ],
+    "quality": {
+      "accessibleInteractiveComponents": true,
+      "noBrokenRoutes": true,
+      "noHorizontalOverflow": true,
+      "productionBuildRequired": true,
+      "typecheckRequired": true
+    }
+  },
+  "Requirements": {
+    "baseline": "v1.0.0",
+    "items": [
+      {
+        "id": "F-01",
+        "name": "Authentication Architecture",
+        "acceptanceCriteria": [
+          "App resolves session state before selecting the application view.",
+          "Authenticated users enter AppShell.",
+          "Guest users enter AppShell with guest access state.",
+          "Unauthenticated users can access AuthScreen.",
+          "Login and ContinueAsGuest actions are defined.",
+          "Guest access is limited to public routes."
+        ]
+      },
+      {
+        "id": "F-02",
+        "name": "Root Application Architecture",
+        "acceptanceCriteria": [
+          "App is the single application entry point.",
+          "App owns session resolution, route resolution, layout selection, and overlay hosting.",
+          "AppShell and StandalonePages are selected without duplicating the root layout.",
+          "Overlays are hosted at application level."
+        ]
+      },
+      {
+        "id": "F-03",
+        "name": "StandalonePages Architecture",
+        "acceptanceCriteria": [
+          "StandalonePages uses a vertical Header, Content, and BottomAction slot layout.",
+          "Content is required and independently scrollable.",
+          "Header and BottomAction are optional per page.",
+          "BottomAction does not cover Content.",
+          "StandalonePages does not render AppShell BottomNav."
+        ]
+      },
+      {
+        "id": "F-04",
+        "name": "Bottom Navigation Architecture",
+        "acceptanceCriteria": [
+          "BottomNav is rendered only in AppShell.",
+          "BottomNav contains Home, Explore, and Live Chat routes.",
+          "Active navigation follows the current route.",
+          "BottomNav respects the device safe area."
+        ]
+      },
+      {
+        "id": "F-05",
+        "name": "Routing Architecture",
+        "acceptanceCriteria": [
+          "Every defined page has a unique route.",
+          "Dynamic route parameters are validated before page rendering.",
+          "Unknown routes render NotFoundPage.",
+          "Navigation preserves URL and active route state.",
+          "Protected routes use an explicit access policy.",
+          "Guest users can access public routes."
+        ]
+      },
+      {
+        "id": "F-06",
+        "name": "Design System and Responsive Layout",
+        "acceptanceCriteria": [
+          "The application supports portrait mobile viewports from 320px and uses 390px as the reference width.",
+          "Header and bottom navigation remain outside the scrolling Content region.",
+          "Content scrolls independently.",
+          "Safe areas are respected by relevant fixed or edge-aligned controls.",
+          "No horizontal overflow occurs at supported viewport widths.",
+          "Design tokens are used consistently."
+        ]
+      },
+      {
+        "id": "F-07",
+        "name": "Overlay Architecture",
+        "acceptanceCriteria": [
+          "Modal, BottomSheet, Drawer, and Toast are hosted centrally.",
+          "Overlays render above the active application layout.",
+          "Overlay visibility and state are centrally controlled.",
+          "Inactive overlays do not intercept interaction.",
+          "Dismissal behavior is defined for interactive overlays."
+        ]
+      },
+      {
+        "id": "F-08",
+        "name": "Production Technical Architecture",
+        "acceptanceCriteria": [
+          "Components have explicit and maintainable responsibilities.",
+          "Component props use TypeScript types or interfaces.",
+          "Any usage is avoided or documented with a technical reason.",
+          "Loading, error, and empty states are handled.",
+          "Interactive components follow accessibility requirements.",
+          "Type checking completes without errors.",
+          "Production build completes successfully.",
+          "All defined routes are verified."
+        ]
+      }
+    ]
+  },
+  "Scope": {
+    "included": [
+      "application-architecture",
+      "authentication-screen-structure",
+      "guest-entry-flow",
+      "app-shell",
+      "standalone-page-layout",
+      "routing-contract",
+      "bottom-navigation",
+      "design-system",
+      "overlay-architecture",
+      "typescript-production-standards"
+    ],
+    "excluded": [
+      "authentication-provider-integration",
+      "booking-backend",
+      "payment-gateway",
+      "database-integration",
+      "live-chat-backend",
+      "notification-service"
+    ],
+    "deployment": "requires-separate-approval",
+    "merge": "requires-separate-approval"
   }
 }
