@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "Travel & Tours App",
+  "source": "struktur.md",
+  "type": "App",
+  "children": [
+    {
+      "type": "AuthScreen",
+      "children": [
+        {
+          "type": "Login"
+        },
+        {
+          "type": "Guest"
+        }
+      ]
+    },
+    {
+      "type": "AppShell",
+      "children": [
+        {
+          "type": "Header",
+          "children": [
+            {
+              "type": "Logo"
+            },
+            {
+              "type": "HeaderActions",
+              "children": [
+                {
+                  "type": "NotifBtn"
+                },
+                {
+                  "type": "ProfileBtn"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Content",
+          "children": [
+            {
+              "type": "HomePage"
+            },
+            {
+              "type": "ExplorePage"
+            },
+            {
+              "type": "LiveChatPage"
+            },
+            {
+              "type": "ProfilePage"
+            },
+            {
+              "type": "NotificationPage"
+            }
+          ]
+        },
+        {
+          "type": "BottomNav",
+          "children": [
+            {
+              "type": "Home"
+            },
+            {
+              "type": "Explore"
+            },
+            {
+              "type": "LiveChat"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "StandalonePages",
+      "children": [
+        {
+          "type": "Header"
+        },
+        {
+          "type": "Content",
+          "children": [
+            {
+              "type": "DestinationDetailPage"
+            },
+            {
+              "type": "TourDetailPage"
+            },
+            {
+              "type": "SearchResultsPage"
+            },
+            {
+              "type": "BookingPage"
+            },
+            {
+              "type": "CheckoutPage"
+            },
+            {
+              "type": "PaymentPage"
+            },
+            {
+              "type": "PaymentResultPage"
+            },
+            {
+              "type": "BookingDetailPage"
+            },
+            {
+              "type": "EditProfilePage"
+            },
+            {
+              "type": "SettingsPage"
+            },
+            {
+              "type": "HelpCenterPage"
+            },
+            {
+              "type": "ReviewPage"
+            },
+            {
+              "type": "TermsPage"
+            },
+            {
+              "type": "PrivacyPolicyPage"
+            }
+          ]
+        },
+        {
+          "type": "BottomAction"
+        }
+      ]
+    },
+    {
+      "type": "Overlays",
+      "children": [
+        {
+          "type": "NotificationPanel"
+        },
+        {
+          "type": "ProfileMenu"
+        },
+        {
+          "type": "SearchOverlay"
+        },
+        {
+          "type": "Modal"
+        },
+        {
+          "type": "BottomSheet"
+        },
+        {
+          "type": "Toast"
+        },
+        {
+          "type": "LoadingOverlay"
+        }
+      ]
+    }
+  ]
+}
