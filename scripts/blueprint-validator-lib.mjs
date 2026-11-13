@@ -69,7 +69,7 @@ export function validateContracts({ blueprint, users, products }) {
     add(errors, ["guest", "customer"].includes(user.role), `Invalid role for user ${user.id}.`);
     add(errors, ["active", "inactive", "suspended"].includes(user.status), `Invalid status for user ${user.id}.`);
     if (user.isGuest) add(errors, user.role === "guest" && user.authProvider === "guest" && user.phone === null && user.credentials === null, `Guest user ${user.id} must not have phone credentials.`);
-    else add(errors, user.role === "customer" && user.authProvider === "phone" && /^\\+[1-9][0-9]{7,14}$/.test(user.phone ?? "") && typeof user.credentials?.password === "string" && user.credentials.password.length > 0, `Authenticated user ${user.id} must have a valid phone and password fixture.`);
+    else add(errors, user.role === "customer" && user.authProvider === "phone" && /^\+[1-9][0-9]{7,14}$/.test(user.phone ?? "") && typeof user.credentials?.password === "string" && user.credentials.password.length > 0, `Authenticated user ${user.id} must have a valid phone and password fixture.`);
   }
   add(errors, (users?.users ?? []).some((item) => item.isGuest === true), "A Guest fixture is required.");
   add(errors, (users?.users ?? []).some((item) => item.isGuest === false), "An authenticated phone fixture is required.");
