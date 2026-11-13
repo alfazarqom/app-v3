@@ -275,6 +275,74 @@
           "items": {
             "type": "string"
           }
+        },
+        "policy": {
+          "const": "every-component-reference-must-exist-in-registeredComponents"
+        },
+        "systemComponentContracts": {
+          "type": "object",
+          "required": [
+            "AppLoadingState",
+            "NotFoundPage"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "AppLoadingState": {
+              "type": "object",
+              "required": [
+                "responsibility",
+                "props",
+                "accessibility"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "responsibility": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "props": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "accessibility": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "NotFoundPage": {
+              "type": "object",
+              "required": [
+                "responsibility",
+                "layout",
+                "actions",
+                "accessibility"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "responsibility": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "layout": {
+                  "const": "StandalonePage"
+                },
+                "actions": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "accessibility": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
         }
       },
       "additionalProperties": false
