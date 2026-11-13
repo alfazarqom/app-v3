@@ -49,6 +49,8 @@
     "classification": "mock-only",
     "notForProduction": true,
     "passwordStorage": "plaintext-test-fixture-only",
-    "warning": "Credentials in this file are test fixtures and must never be used as production credentials."
+    "warning": "Credentials in this file are test fixtures and must never be used as production credentials.",
+    "productionUsage": "prohibited",
+    "credentialUsage": "fixture-only"
   }
 }
