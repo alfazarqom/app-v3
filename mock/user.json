@@ -44,5 +44,11 @@
       "createdAt": "2026-01-15T08:00:00.000Z",
       "updatedAt": "2026-01-15T08:00:00.000Z"
     }
-  ]
+  ],
+  "fixtureMetadata": {
+    "classification": "mock-only",
+    "notForProduction": true,
+    "passwordStorage": "plaintext-test-fixture-only",
+    "warning": "Credentials in this file are test fixtures and must never be used as production credentials."
+  }
 }
