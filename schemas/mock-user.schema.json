@@ -185,8 +185,7 @@
                 "role": {
                   "const": "guest"
                 }
-              },
-              "additionalProperties": false
+              }
             }
           },
           {
@@ -225,8 +224,7 @@
                 "role": {
                   "const": "customer"
                 }
-              },
-              "additionalProperties": false
+              }
             }
           }
         ],
