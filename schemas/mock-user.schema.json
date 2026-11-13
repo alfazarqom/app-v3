@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alfazarqom/app-v3/schemas/mock-user.schema.json",
+  "title": "Travel & Tours Mock Users",
+  "type": "object",
+  "required": [
+    "users",
+    "fixtureMetadata"
+  ],
+  "properties": {
+    "fixtureMetadata": {
+      "type": "object",
+      "required": [
+        "classification",
+        "notForProduction",
+        "passwordStorage",
+        "warning"
+      ],
+      "properties": {
+        "classification": {
+          "const": "mock-only"
+        },
+        "notForProduction": {
+          "const": true
+        },
+        "passwordStorage": {
+          "const": "plaintext-test-fixture-only"
+        },
+        "warning": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "users": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "role",
+          "authProvider",
+          "isGuest",
+          "credentials",
+          "status",
+          "preferences",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authProvider": {
+            "enum": [
+              "guest",
+              "phone"
+            ]
+          },
+          "isGuest": {
+            "type": "boolean"
+          },
+          "credentials": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "preferences": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "isGuest": {
+                  "const": true
+                }
+              },
+              "required": [
+                "isGuest"
+              ]
+            },
+            "then": {
+              "properties": {
+                "authProvider": {
+                  "const": "guest"
+                },
+                "credentials": {
+                  "type": "null"
+                },
+                "phone": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "isGuest": {
+                  "const": false
+                }
+              },
+              "required": [
+                "isGuest"
+              ]
+            },
+            "then": {
+              "properties": {
+                "authProvider": {
+                  "const": "phone"
+                },
+                "phone": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "credentials": {
+                  "type": "object",
+                  "required": [
+                    "password"
+                  ],
+                  "properties": {
+                    "password": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
+}
