@@ -5,7 +5,6 @@ import { validateContracts } from "../scripts/blueprint-validator-lib.mjs";
 
 const json = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
 const baseline = () => ({ blueprint: json("../blueprint.json"), users: json("../mock/user.json"), products: json("../mock/products.json") });
-const clone = (value) => structuredClone(value);
 
 test("accepts the v1.4.0 baseline fixtures", () => {
   assert.deepEqual(validateContracts(baseline()), []);
