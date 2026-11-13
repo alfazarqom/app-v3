@@ -14,7 +14,9 @@
         "classification",
         "notForProduction",
         "passwordStorage",
-        "warning"
+        "warning",
+        "productionUsage",
+        "credentialUsage"
       ],
       "properties": {
         "classification": {
@@ -156,7 +158,7 @@
           },
           "avatarUrl": {
             "type": "string",
-            "format": "uri"
+            "pattern": "^https?://"
           }
         },
         "allOf": [
