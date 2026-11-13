@@ -1,3 +1,8 @@
+# Struktur Aplikasi
+
+Dokumen ini mendefinisikan struktur tingkat tinggi aplikasi Travel & Tours.
+
+```text
 App
 ├── AuthScreen
 │   ├── Login
@@ -46,3 +51,4 @@ App
     ├── BottomSheet
     ├── Toast
     └── LoadingOverlay
+```
