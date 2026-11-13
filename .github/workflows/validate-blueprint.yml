@@ -1,0 +1,29 @@
+name: Validate Blueprint and Mock Data
+
+on:
+  push:
+    paths: ["blueprint.json", "mock/**", "schemas/**", "scripts/validate-blueprint.mjs", ".github/workflows/validate-blueprint.yml"]
+  pull_request:
+    paths: ["blueprint.json", "mock/**", "schemas/**", "scripts/validate-blueprint.mjs", ".github/workflows/validate-blueprint.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JSON Schemas
+        run: |
+          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/blueprint.schema.json -d blueprint.json
+          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/mock-user.schema.json -d mock/user.json
+          npx --yes ajv-cli@5 validate --spec=draft2020 -s schemas/mock-products.schema.json -d mock/products.json
+      - name: Validate cross-file contracts
+        run: node scripts/validate-blueprint.mjs

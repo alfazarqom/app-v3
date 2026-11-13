@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alfazarqom/app-v3/schemas/mock-products.schema.json",
+  "title": "Travel & Tours Mock Products",
+  "type": "object",
+  "required": [
+    "products",
+    "fixtureMetadata"
+  ],
+  "properties": {
+    "fixtureMetadata": {
+      "type": "object",
+      "required": [
+        "classification",
+        "notForProduction",
+        "imageAssets",
+        "warning"
+      ],
+      "properties": {
+        "classification": {
+          "const": "mock-only"
+        },
+        "notForProduction": {
+          "const": true
+        },
+        "imageAssets": {
+          "const": "placeholder-only"
+        },
+        "warning": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "type",
+          "category",
+          "destination",
+          "images",
+          "price",
+          "duration",
+          "rating",
+          "availability",
+          "inclusions",
+          "exclusions",
+          "itinerary",
+          "tags",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "const": "tour"
+          },
+          "destination": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "country",
+              "city"
+            ]
+          },
+          "images": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^https?://"
+            }
+          },
+          "price": {
+            "type": "object",
+            "required": [
+              "amount",
+              "currency",
+              "priceType"
+            ],
+            "properties": {
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "const": "IDR"
+              },
+              "priceType": {
+                "const": "per_person"
+              }
+            }
+          },
+          "duration": {
+            "type": "object",
+            "required": [
+              "value",
+              "unit"
+            ]
+          },
+          "rating": {
+            "type": "object",
+            "required": [
+              "average",
+              "count"
+            ]
+          },
+          "availability": {
+            "type": "object",
+            "required": [
+              "status",
+              "capacity",
+              "remaining"
+            ]
+          },
+          "inclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "itinerary": {
+            "type": "array",
+            "minItems": 1
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+          },
+          "updatedAt": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

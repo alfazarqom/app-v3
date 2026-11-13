@@ -1,0 +1,256 @@
+{
+  "products": [
+    {
+      "id": "tour_bali_001",
+      "slug": "bali-cultural-escape",
+      "name": "Bali Cultural Escape",
+      "type": "tour",
+      "category": "Cultural",
+      "destination": {
+        "id": "destination_bali",
+        "name": "Bali",
+        "country": "Indonesia",
+        "city": "Denpasar"
+      },
+      "shortDescription": "Explore Bali's temples, traditions, and beautiful landscapes.",
+      "description": "A guided cultural journey through iconic temples, traditional villages, and scenic landscapes in Bali.",
+      "images": [
+        "https://placehold.co/1200x800",
+        "https://placehold.co/1200x800"
+      ],
+      "price": {
+        "amount": 1850000,
+        "currency": "IDR",
+        "priceType": "per_person"
+      },
+      "duration": {
+        "value": 3,
+        "unit": "days"
+      },
+      "rating": {
+        "average": 4.8,
+        "count": 124
+      },
+      "availability": {
+        "status": "available",
+        "capacity": 20,
+        "remaining": 8
+      },
+      "inclusions": [
+        "Local tour guide",
+        "Hotel accommodation",
+        "Daily breakfast",
+        "Entrance tickets"
+      ],
+      "exclusions": [
+        "Flights",
+        "Personal expenses"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival and Ubud",
+          "activities": [
+            "Hotel check-in",
+            "Ubud cultural walk"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Temples and Landscapes",
+          "activities": [
+            "Temple visit",
+            "Rice terrace exploration"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Local Traditions",
+          "activities": [
+            "Traditional village visit",
+            "Departure"
+          ]
+        }
+      ],
+      "tags": [
+        "culture",
+        "temple",
+        "nature",
+        "bestseller"
+      ],
+      "status": "published",
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "tour_yogyakarta_001",
+      "slug": "yogyakarta-heritage-discovery",
+      "name": "Yogyakarta Heritage Discovery",
+      "type": "tour",
+      "category": "Heritage",
+      "destination": {
+        "id": "destination_yogyakarta",
+        "name": "Yogyakarta",
+        "country": "Indonesia",
+        "city": "Yogyakarta"
+      },
+      "shortDescription": "Discover historic landmarks and the cultural heart of Java.",
+      "description": "Visit celebrated heritage sites and experience the local culture of Yogyakarta with an experienced guide.",
+      "images": [
+        "https://placehold.co/1200x800",
+        "https://placehold.co/1200x800"
+      ],
+      "price": {
+        "amount": 1250000,
+        "currency": "IDR",
+        "priceType": "per_person"
+      },
+      "duration": {
+        "value": 2,
+        "unit": "days"
+      },
+      "rating": {
+        "average": 4.7,
+        "count": 86
+      },
+      "availability": {
+        "status": "available",
+        "capacity": 15,
+        "remaining": 5
+      },
+      "inclusions": [
+        "Local tour guide",
+        "Ground transportation",
+        "Entrance tickets"
+      ],
+      "exclusions": [
+        "Accommodation",
+        "Meals not listed in itinerary",
+        "Personal expenses"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "City and Palace",
+          "activities": [
+            "Sultan Palace",
+            "Taman Sari"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Ancient Heritage",
+          "activities": [
+            "Borobudur area",
+            "Local craft experience"
+          ]
+        }
+      ],
+      "tags": [
+        "heritage",
+        "history",
+        "culture"
+      ],
+      "status": "published",
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "tour_raja_ampat_001",
+      "slug": "raja-ampat-island-adventure",
+      "name": "Raja Ampat Island Adventure",
+      "type": "tour",
+      "category": "Adventure",
+      "destination": {
+        "id": "destination_raja_ampat",
+        "name": "Raja Ampat",
+        "country": "Indonesia",
+        "city": "Waisai"
+      },
+      "shortDescription": "Experience island-hopping and marine scenery in Raja Ampat.",
+      "description": "An island adventure featuring guided boat trips, snorkeling opportunities, and time to enjoy the region's natural beauty.",
+      "images": [
+        "https://placehold.co/1200x800",
+        "https://placehold.co/1200x800"
+      ],
+      "price": {
+        "amount": 4250000,
+        "currency": "IDR",
+        "priceType": "per_person"
+      },
+      "duration": {
+        "value": 4,
+        "unit": "days"
+      },
+      "rating": {
+        "average": 4.9,
+        "count": 52
+      },
+      "availability": {
+        "status": "limited",
+        "capacity": 12,
+        "remaining": 2
+      },
+      "inclusions": [
+        "Boat transfers during the tour",
+        "Local guide",
+        "Snorkeling equipment",
+        "Accommodation"
+      ],
+      "exclusions": [
+        "Flights",
+        "Marine park fees",
+        "Personal expenses"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Waisai",
+          "activities": [
+            "Arrival assistance",
+            "Accommodation check-in"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Island Exploration",
+          "activities": [
+            "Guided island-hopping",
+            "Snorkeling"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Marine Discovery",
+          "activities": [
+            "Snorkeling excursion",
+            "Leisure time"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Departure",
+          "activities": [
+            "Breakfast",
+            "Transfer to departure point"
+          ]
+        }
+      ],
+      "tags": [
+        "adventure",
+        "island",
+        "snorkeling",
+        "nature"
+      ],
+      "status": "published",
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    }
+  ],
+  "fixtureMetadata": {
+    "classification": "mock-only",
+    "notForProduction": true,
+    "imageAssets": "placeholder-only",
+    "warning": "Product images are placeholders and must be replaced with approved production assets before production use."
+  }
+}

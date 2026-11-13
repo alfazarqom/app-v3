@@ -1,19 +1,123 @@
 {
-  "App": {
+  "blueprint": {
     "name": "Travel & Tours",
-    "platform": "Mobile App",
-    "layout": "MobileFirst",
-    "root": "AppShell",
-    "standalonePages": "StandalonePages"
+    "version": "1.3.0",
+    "status": "final-blueprint",
+    "source": "blueprint.json",
+    "platform": "mobile-only",
+    "orientation": "portrait",
+    "framework": "React",
+    "language": "TypeScript",
+    "documentType": "application-specific-blueprint",
+    "validationStatus": "schema-and-cross-reference-validation-defined",
+    "revision": "1.3.0",
+    "previousRevision": "1.2.0"
+  },
+  "App": {
+    "component": "App",
+    "root": true,
+    "responsibilities": [
+      "application-entry",
+      "session-state-resolution",
+      "route-resolution",
+      "layout-selection",
+      "overlay-host"
+    ],
+    "children": [
+      "AuthScreen",
+      "AppShell",
+      "StandalonePages",
+      "Overlays"
+    ],
+    "states": {
+      "resolving": {
+        "view": "AppLoadingState"
+      },
+      "authenticated": {
+        "view": "route-driven"
+      },
+      "guest": {
+        "view": "route-driven"
+      },
+      "unauthenticated": {
+        "view": "route-driven",
+        "defaultView": "AuthScreen",
+        "allowedLayouts": [
+          "AuthScreen",
+          "StandalonePages",
+          "NotFoundPage"
+        ]
+      }
+    },
+    "guestAccess": {
+      "enabled": true,
+      "action": "ContinueAsGuest",
+      "destination": "AppShell",
+      "accessPolicy": "public-and-guest-allowed-routes-only",
+      "allowedAccessLevels": [
+        "public",
+        "guest-allowed"
+      ]
+    },
+    "layoutSelection": {
+      "strategy": "route-classification-and-session-access-driven",
+      "precedence": [
+        "resolve-session-state",
+        "match-current-route",
+        "validate-dynamic-route-parameters",
+        "enforce-route-access-policy",
+        "classify-route-layout",
+        "select-layout-from-route-and-session",
+        "render-single-active-page"
+      ],
+      "rules": {
+        "resolving": "AppLoadingState",
+        "authenticatedAppShellRoute": "AppShell",
+        "authenticatedStandaloneRoute": "StandalonePages",
+        "guestAppShellRoute": "AppShell",
+        "guestStandaloneRoute": "StandalonePages",
+        "unauthenticatedEntryRoute": "AuthScreen",
+        "unauthenticatedPublicStandaloneRoute": "StandalonePages",
+        "unauthenticatedAuthEntryRoute": "AuthScreen",
+        "deniedRoute": "configured-access-denied-behavior",
+        "unknownRoute": "NotFoundPage"
+      },
+      "authScreen": "default-view-for-unauthenticated-entry",
+      "appShell": "for-registered-app-shell-routes-when-session-or-guest-access-is-valid",
+      "standalonePages": "for-registered-standalone-routes-when-route-access-is-valid",
+      "unknownRoute": "NotFoundPage",
+      "sessionStateDoesNotForceLayout": true
+    }
+  },
+  "AuthScreen": {
+    "component": "AuthScreen",
+    "layout": "standalone",
+    "children": [
+      {
+        "id": "login",
+        "component": "Login",
+        "action": "StartAuthentication"
+      },
+      {
+        "id": "guest",
+        "component": "Guest",
+        "action": "ContinueAsGuest"
+      }
+    ]
   },
   "AppShell": {
     "component": "AppShell",
     "layout": "vertical",
+    "responsibilities": [
+      "primary-navigation-layout",
+      "shared-page-chrome"
+    ],
     "children": [
       {
         "id": "header",
         "component": "Header",
         "position": "top",
+        "flexShrink": 0,
         "children": [
           {
             "id": "logo",
@@ -44,39 +148,50 @@
         "id": "content",
         "component": "Content",
         "flex": 1,
+        "minHeight": 0,
         "scrollable": true,
         "children": [
           {
             "id": "home-page",
             "component": "HomePage",
-            "route": "/"
+            "route": "/",
+            "access": "public"
           },
           {
             "id": "explore-page",
             "component": "ExplorePage",
-            "route": "/explore"
+            "route": "/explore",
+            "access": "public"
           },
           {
             "id": "livechat-page",
             "component": "LiveChatPage",
-            "route": "/live-chat"
+            "route": "/live-chat",
+            "access": "public"
           },
           {
             "id": "profile-page",
             "component": "ProfilePage",
-            "route": "/profile"
+            "route": "/profile",
+            "access": "public"
           },
           {
             "id": "notification-page",
             "component": "NotificationPage",
-            "route": "/notifications"
+            "route": "/notifications",
+            "access": "public"
           }
-        ]
+        ],
+        "renderMode": "single-active-page",
+        "activePageSource": "validated-current-route",
+        "inactivePageBehavior": "not-rendered-as-active-page"
       },
       {
         "id": "bottom-nav",
         "component": "BottomNav",
         "position": "bottom",
+        "flexShrink": 0,
+        "visibility": "app-shell-only",
         "items": [
           {
             "id": "home",
@@ -97,11 +212,6 @@
             "route": "/live-chat"
           }
         ]
-      },
-      {
-        "id": "overlays",
-        "component": "Overlays",
-        "children": []
       }
     ]
   },
@@ -109,54 +219,232 @@
     "component": "StandalonePages",
     "layout": {
       "type": "vertical",
-      "children": [
-        "Header",
-        "Content",
-        "BottomAction"
-      ]
+      "slots": [
+        {
+          "component": "Header",
+          "required": false,
+          "flexShrink": 0
+        },
+        {
+          "component": "Content",
+          "required": true,
+          "flex": 1,
+          "minHeight": 0,
+          "overflowY": "auto"
+        },
+        {
+          "component": "BottomAction",
+          "required": false,
+          "flexShrink": 0
+        }
+      ],
+      "bottomNav": false,
+      "contentOwnership": "page-content-only",
+      "bottomActionBehavior": {
+        "participatesInLayoutFlow": true,
+        "overlaysContent": false,
+        "visibility": "page-defined"
+      }
     },
     "pages": [
       {
         "id": "destination-detail-page",
         "component": "DestinationDetailPage",
-        "route": "/destinations/:destinationId"
+        "route": "/destinations/:destinationId",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "tour-detail-page",
         "component": "TourDetailPage",
-        "route": "/tours/:tourId"
+        "route": "/tours/:tourId",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "search-results-page",
         "component": "SearchResultsPage",
-        "route": "/search"
+        "route": "/search",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "booking-page",
         "component": "BookingPage",
-        "route": "/booking"
+        "route": "/booking",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "checkout-page",
         "component": "CheckoutPage",
-        "route": "/checkout"
+        "route": "/checkout",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "booking-confirmation-page",
         "component": "BookingConfirmationPage",
-        "route": "/booking/confirmation"
+        "route": "/booking/confirmation",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "booking-history-page",
         "component": "BookingHistoryPage",
-        "route": "/bookings"
+        "route": "/bookings",
+        "layout": "StandalonePage",
+        "access": "public"
       },
       {
         "id": "booking-detail-page",
         "component": "BookingDetailPage",
-        "route": "/bookings/:bookingId"
+        "route": "/bookings/:bookingId",
+        "layout": "StandalonePage",
+        "access": "public"
       }
     ]
+  },
+  "Routing": {
+    "strategy": "route-based",
+    "defaultRoute": "/",
+    "defaultPage": "HomePage",
+    "unknownRoute": {
+      "component": "NotFoundPage",
+      "layout": "StandalonePage"
+    },
+    "dynamicParameters": {
+      "enabled": true,
+      "validation": "validate-required-route-parameters-before-page-render",
+      "contract": {
+        "parameterNamesMustMatchRoute": true,
+        "required": true,
+        "valueType": "string",
+        "trimWhitespace": true,
+        "rejectEmpty": true,
+        "rejectMalformedUrlEncoding": true,
+        "decodeBeforeValidation": true,
+        "renderBeforeValidation": false
+      },
+      "invalidParameterBehavior": {
+        "component": "NotFoundPage",
+        "layout": "StandalonePage",
+        "renderTargetPage": false,
+        "preserveSafeNavigation": true
+      },
+      "routeParameters": [
+        {
+          "route": "/destinations/:destinationId",
+          "parameters": [
+            {
+              "name": "destinationId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        },
+        {
+          "route": "/tours/:tourId",
+          "parameters": [
+            {
+              "name": "tourId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        },
+        {
+          "route": "/bookings/:bookingId",
+          "parameters": [
+            {
+              "name": "bookingId",
+              "required": true,
+              "type": "string",
+              "trimWhitespace": true,
+              "rejectEmpty": true
+            }
+          ]
+        }
+      ]
+    },
+    "navigation": {
+      "preserveUrl": true,
+      "activeRouteDrivesPage": true,
+      "activeRouteDrivesBottomNav": true
+    },
+    "accessPolicy": {
+      "default": null,
+      "allowedValues": [
+        "public",
+        "guest-allowed",
+        "authenticated"
+      ],
+      "routeDeclaration": "every-registered-route-must-explicitly-declare-access; missing-or-invalid-access-fails-validation",
+      "guest": "public-and-guest-allowed-routes-only",
+      "protectedRoutes": [],
+      "protectedRouteBehavior": "deny-before-layout-render",
+      "unauthenticatedBehavior": "allow-public-routes-only; show-auth-screen-for-entry-or-auth-route",
+      "deniedRouteBehavior": "redirect-to-auth-screen",
+      "accessEvaluationOrder": "before-layout-selection-and-page-render",
+      "missingAccessBehavior": "reject-route-registration-and-do-not-render",
+      "invalidAccessBehavior": "reject-route-registration-and-do-not-render"
+    },
+    "resolutionOrder": [
+      "resolve-session-state",
+      "match-current-route",
+      "validate-dynamic-route-parameters",
+      "enforce-route-access-policy",
+      "select-page-layout-from-route-and-session",
+      "render-exactly-one-active-page"
+    ],
+    "routeConflictPolicy": "exact-static-routes-before-dynamic-parameter-routes",
+    "fallback": {
+      "route": "*",
+      "component": "NotFoundPage",
+      "layout": "StandalonePage",
+      "actions": [
+        "NavigateHome",
+        "GoBack"
+      ],
+      "access": "public"
+    },
+    "entryRoute": {
+      "route": "/",
+      "authenticated": {
+        "component": "HomePage",
+        "layout": "AppShell"
+      },
+      "guest": {
+        "component": "HomePage",
+        "layout": "AppShell"
+      },
+      "unauthenticated": {
+        "component": "AuthScreen",
+        "layout": "AuthScreen"
+      },
+      "rationale": "Unauthenticated root entry resolves to AuthScreen; authenticated and guest sessions resolve to HomePage."
+    },
+    "layoutResolution": {
+      "strategy": "route-classification-and-session-access-driven",
+      "sessionStateDoesNotForceLayout": true,
+      "appShellRoutes": "registered-app-shell-routes-only",
+      "standaloneRoutes": "registered-standalone-routes-only",
+      "selectionOrder": [
+        "resolve-session",
+        "match-route",
+        "validate-route-parameters",
+        "evaluate-access",
+        "classify-route-layout",
+        "select-layout",
+        "render-single-active-page"
+      ],
+      "unauthenticatedEntryBehavior": "AuthScreen",
+      "unknownRouteBehavior": "NotFoundPage"
+    }
   },
   "Navigation": {
     "defaultPage": "HomePage",
@@ -170,14 +458,66 @@
       "NotifBtn": "NotificationPage",
       "ProfileBtn": "ProfilePage"
     },
-    "standalonePageNavigation": "RouteBased"
+    "standalonePageNavigation": "RouteBased",
+    "bottomNavVisibility": {
+      "AppShell": true,
+      "StandalonePages": false,
+      "AuthScreen": false
+    }
+  },
+  "Overlays": {
+    "component": "Overlays",
+    "host": "App",
+    "layer": "above-current-layout",
+    "components": [
+      {
+        "id": "modal",
+        "component": "Modal",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "bottom-sheet",
+        "component": "BottomSheet",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "drawer",
+        "component": "Drawer",
+        "enabled": true,
+        "dismissible": true
+      },
+      {
+        "id": "toast",
+        "component": "Toast",
+        "enabled": true,
+        "dismissible": false,
+        "behavior": "temporary-notification"
+      }
+    ],
+    "stateManagement": "centralized",
+    "inactiveInteraction": false,
+    "accessibility": {
+      "modalFocusManagement": true,
+      "restoreFocusOnDismiss": true,
+      "escapeDismissalWhenSupported": true,
+      "announceToastNotifications": true
+    }
   },
   "DesignSystem": {
     "style": "Modern Premium Travel",
     "theme": "Light",
+    "platform": "mobile-only",
+    "orientation": "portrait",
+    "tokens": {
+      "primaryColor": "#0F766E",
+      "backgroundColor": "#FFFFFF",
+      "surfaceColor": "#F8FAFC",
+      "borderRadius": "16px",
+      "spacing": "8px"
+    },
     "layout": {
-      "platform": "mobile-only",
-      "orientation": "portrait",
       "appShell": {
         "display": "flex",
         "direction": "column",
@@ -186,7 +526,6 @@
         "overflow": "hidden"
       },
       "header": {
-        "position": "top",
         "flexShrink": 0
       },
       "content": {
@@ -195,8 +534,8 @@
         "overflowY": "auto"
       },
       "bottomNav": {
-        "position": "bottom",
-        "flexShrink": 0
+        "flexShrink": 0,
+        "safeAreaAware": false
       },
       "standalonePage": {
         "display": "flex",
@@ -211,24 +550,485 @@
           "overflowY": "auto"
         },
         "bottomAction": {
-          "flexShrink": 0
+          "flexShrink": 0,
+          "safeAreaAware": false
         }
       },
       "overlays": {
-        "layer": "above-app-shell"
+        "layer": "above-current-layout"
       },
-      "safeArea": true
+      "safeArea": true,
+      "safeAreaPolicy": {
+        "owner": "application-layout",
+        "responsibility": "calculate-and-apply-device-safe-area-insets",
+        "applyTo": [
+          "Header",
+          "BottomNav",
+          "BottomAction",
+          "edge-aligned-overlays"
+        ],
+        "childComponents": "consume-layout-provided-insets",
+        "childSafeAreaAwareSemantics": "false-means-no-independent-inset-calculation;-consume-layout-provided-insets",
+        "prohibitDuplicateInsets": true
+      }
     },
-    "primaryColor": "#0F766E",
-    "backgroundColor": "#FFFFFF",
-    "surfaceColor": "#F8FAFC",
-    "borderRadius": "16px",
-    "spacing": "8px",
     "mobile": {
       "referenceWidth": 390,
       "minimumWidth": 320,
+      "navigationHeight": "64px",
       "safeArea": true,
-      "navigationHeight": "64px"
+      "horizontalOverflow": false
     }
+  },
+  "TechnicalStandards": {
+    "framework": "React",
+    "language": "TypeScript",
+    "componentModel": "functional-components",
+    "typeSafety": {
+      "strict": true,
+      "avoidAny": true,
+      "documentExceptions": true
+    },
+    "architecture": {
+      "reusableComponents": true,
+      "centralizedRouting": true,
+      "centralizedLayout": true,
+      "centralizedOverlayManagement": true,
+      "explicitComponentContracts": true
+    },
+    "uiStates": [
+      "loading",
+      "error",
+      "empty"
+    ],
+    "quality": {
+      "accessibleInteractiveComponents": true,
+      "noBrokenRoutes": true,
+      "noHorizontalOverflow": true,
+      "productionBuildRequired": true,
+      "typecheckRequired": true
+    },
+    "accessibility": {
+      "semanticElements": true,
+      "keyboardAndScreenReaderSupport": true,
+      "accessibleNamesForIconOnlyControls": true,
+      "visibleFocusState": true,
+      "modalFocusTrapAndRestore": true
+    },
+    "validation": {
+      "jsonSyntax": "required",
+      "routeUniqueness": "required",
+      "componentReferenceConsistency": "every-component-reference-must-exist-in-ComponentRegistry.registeredComponents",
+      "typescriptStrictTypecheck": "required",
+      "productionBuild": "required",
+      "routeAccessDeclaration": "required",
+      "singleActivePageRendering": "required",
+      "safeAreaOwnership": "application-layout-only; children-consume-provided-insets",
+      "jsonSchema": "schemas/blueprint.schema.json",
+      "mockUserSchema": "schemas/mock-user.schema.json",
+      "mockProductsSchema": "schemas/mock-products.schema.json",
+      "crossReferenceValidation": "scripts/validate-blueprint.mjs",
+      "automatedWorkflow": ".github/workflows/validate-blueprint.yml",
+      "guestAccessConsistency": "App.guestAccess.allowedAccessLevels-must-match-Routing.accessPolicy.allowedValues-for-guest",
+      "repositoryValidationScope": [
+        "blueprint.json",
+        "mock/user.json",
+        "mock/products.json"
+      ]
+    }
+  },
+  "Requirements": {
+    "baseline": "v1.3.0",
+    "items": [
+      {
+        "id": "F-01",
+        "name": "Authentication Architecture",
+        "acceptanceCriteria": [
+          "App resolves session state before selecting the application view.",
+          "Authenticated users enter AppShell.",
+          "Guest users enter AppShell with guest access state.",
+          "Unauthenticated users can access AuthScreen.",
+          "Login and ContinueAsGuest actions are defined.",
+          "Guest users may access routes with public or guest-allowed access levels only."
+        ]
+      },
+      {
+        "id": "F-02",
+        "name": "Root Application Architecture",
+        "acceptanceCriteria": [
+          "App is the single application entry point.",
+          "App owns session resolution, route resolution, layout selection, and overlay hosting.",
+          "AppShell and StandalonePages are selected without duplicating the root layout.",
+          "Overlays are hosted at application level."
+        ]
+      },
+      {
+        "id": "F-03",
+        "name": "StandalonePages Architecture",
+        "acceptanceCriteria": [
+          "StandalonePages uses a vertical Header, Content, and BottomAction slot layout.",
+          "Content is required and independently scrollable.",
+          "Header and BottomAction are optional per page.",
+          "BottomAction does not cover Content.",
+          "StandalonePages does not render AppShell BottomNav."
+        ]
+      },
+      {
+        "id": "F-04",
+        "name": "Bottom Navigation Architecture",
+        "acceptanceCriteria": [
+          "BottomNav is rendered only in AppShell.",
+          "BottomNav contains Home, Explore, and Live Chat routes.",
+          "Active navigation follows the current route.",
+          "BottomNav respects the device safe area."
+        ]
+      },
+      {
+        "id": "F-05",
+        "name": "Routing Architecture",
+        "acceptanceCriteria": [
+          "Every defined page has a unique route.",
+          "Dynamic route parameters are validated before page rendering.",
+          "Unknown routes render NotFoundPage.",
+          "Navigation preserves URL and active route state.",
+          "Protected routes use an explicit access policy.",
+          "Guest users can access public routes."
+        ]
+      },
+      {
+        "id": "F-06",
+        "name": "Design System and Responsive Layout",
+        "acceptanceCriteria": [
+          "The application supports portrait mobile viewports from 320px and uses 390px as the reference width.",
+          "Header and bottom navigation remain outside the scrolling Content region.",
+          "Content scrolls independently.",
+          "Safe areas are respected by relevant fixed or edge-aligned controls.",
+          "No horizontal overflow occurs at supported viewport widths.",
+          "Design tokens are used consistently."
+        ]
+      },
+      {
+        "id": "F-07",
+        "name": "Overlay Architecture",
+        "acceptanceCriteria": [
+          "Modal, BottomSheet, Drawer, and Toast are hosted centrally.",
+          "Overlays render above the active application layout.",
+          "Overlay visibility and state are centrally controlled.",
+          "Inactive overlays do not intercept interaction.",
+          "Dismissal behavior is defined for interactive overlays."
+        ]
+      },
+      {
+        "id": "F-08",
+        "name": "Production Technical Architecture",
+        "acceptanceCriteria": [
+          "Components have explicit and maintainable responsibilities.",
+          "Component props use TypeScript types or interfaces.",
+          "Any usage is avoided or documented with a technical reason.",
+          "Loading, error, and empty states are handled.",
+          "Interactive components follow accessibility requirements.",
+          "Type checking completes without errors.",
+          "Production build completes successfully.",
+          "All defined routes are verified."
+        ]
+      },
+      {
+        "id": "F-09",
+        "name": "Component Registry and System Component Contracts",
+        "acceptanceCriteria": [
+          "Every component reference in the blueprint exists in ComponentRegistry.registeredComponents.",
+          "AppLoadingState has an explicit responsibility and accessibility contract.",
+          "NotFoundPage has an explicit layout, recovery actions, and accessibility contract.",
+          "Component references are validated against the registry."
+        ]
+      },
+      {
+        "id": "F-10",
+        "name": "Single Active Page Rendering",
+        "acceptanceCriteria": [
+          "AppShell.Content renders exactly one active page selected by the validated current route.",
+          "Non-active route pages are not rendered as active page content.",
+          "The active route remains the source of truth for page and BottomNav selection."
+        ]
+      },
+      {
+        "id": "F-11",
+        "name": "Deterministic Session and Layout Selection",
+        "acceptanceCriteria": [
+          "Session resolution completes before access policy and layout selection.",
+          "Route classification and access policy determine whether AuthScreen, AppShell, or StandalonePages is selected.",
+          "Unauthenticated users default to AuthScreen when entering the application without an eligible public standalone route.",
+          "Valid public standalone routes can render without forcing AppShell or AuthScreen.",
+          "Unknown routes render NotFoundPage."
+        ]
+      },
+      {
+        "id": "F-12",
+        "name": "Route-Level Access Policy",
+        "acceptanceCriteria": [
+          "Every registered route declares an access level.",
+          "Supported access levels are public, guest-allowed, and authenticated.",
+          "Guest users can access public and guest-allowed routes only.",
+          "Authenticated routes are accessible only to authenticated users.",
+          "Access is evaluated before layout selection and page rendering.",
+          "Denied protected routes follow the configured authentication redirect behavior."
+        ]
+      },
+      {
+        "id": "F-13",
+        "name": "Single Safe-Area Ownership",
+        "acceptanceCriteria": [
+          "Application layout is the single owner of safe-area inset calculation and application.",
+          "Header, BottomNav, BottomAction, and edge-aligned overlays consume layout-provided insets.",
+          "Child components do not calculate or apply duplicate safe-area insets.",
+          "safeAreaAware=false means a child does not calculate insets independently; it still consumes insets supplied by the application layout.",
+          "Safe-area behavior is consistent across AppShell and StandalonePages."
+        ]
+      },
+      {
+        "id": "F-14",
+        "name": "Deterministic Entry Routing",
+        "acceptanceCriteria": [
+          "The root entry route / resolves to HomePage in AppShell for authenticated users.",
+          "The root entry route / resolves to HomePage in AppShell for guest users.",
+          "The root entry route / resolves to AuthScreen for unauthenticated users.",
+          "Unauthenticated users may render registered public StandalonePages routes without being forced into AppShell.",
+          "Entry route behavior is explicitly defined and does not depend on implicit router defaults."
+        ]
+      },
+      {
+        "id": "F-15",
+        "name": "Unified Guest Access Policy",
+        "acceptanceCriteria": [
+          "App guest access and Routing access policy use the same allowed access levels.",
+          "Guest users may access public and guest-allowed routes only.",
+          "Guest users are denied authenticated routes before layout selection or page rendering.",
+          "The canonical guest policy is public-and-guest-allowed-routes-only.",
+          "No conflicting guest access policy strings exist in the blueprint."
+        ]
+      },
+      {
+        "id": "F-16",
+        "name": "Explicit Route Access Declaration",
+        "acceptanceCriteria": [
+          "Every registered route explicitly declares one supported access level.",
+          "Missing access declarations fail route registration or blueprint validation.",
+          "Invalid access values fail route registration or blueprint validation.",
+          "No implicit public access is granted to routes with missing access declarations."
+        ]
+      },
+      {
+        "id": "F-17",
+        "name": "Dynamic Route Parameter Contract",
+        "acceptanceCriteria": [
+          "Every dynamic route declares its required parameter names and validation rules.",
+          "Required parameters are decoded and validated before the target page renders.",
+          "Empty, whitespace-only, missing, or malformed encoded parameter values are rejected.",
+          "Invalid dynamic parameters render NotFoundPage and never render the target page.",
+          "Dynamic parameter names match the corresponding route template."
+        ]
+      },
+      {
+        "id": "F-18",
+        "name": "Route-Driven Layout Resolution",
+        "acceptanceCriteria": [
+          "Authenticated, guest, and unauthenticated session states do not independently force one layout for every route.",
+          "The matched route classification and evaluated access policy determine the eligible layout.",
+          "Registered AppShell routes render in AppShell when access is allowed.",
+          "Registered standalone routes render in StandalonePages when access is allowed.",
+          "Access denial occurs before layout selection and page rendering.",
+          "Exactly one active page is rendered after layout resolution."
+        ]
+      },
+      {
+        "id": "F-19",
+        "name": "Unified Guest Access Criteria",
+        "acceptanceCriteria": [
+          "Guest users can access every registered public route.",
+          "Guest users can access every registered guest-allowed route.",
+          "Guest users cannot access authenticated routes.",
+          "App, Routing, F-01, F-12, and F-15 use one consistent guest access policy.",
+          "Access denial occurs before the target page or layout is rendered."
+        ]
+      },
+      {
+        "id": "F-20",
+        "name": "Safe Area Ownership Contract",
+        "acceptanceCriteria": [
+          "Application layout is the sole owner of safe-area inset calculation and application.",
+          "Header, BottomNav, BottomAction, and edge-aligned overlays consume insets supplied by the application layout.",
+          "Child components do not independently calculate or duplicate safe-area insets.",
+          "The meaning of safeAreaAware is explicitly documented in the design system.",
+          "Safe-area behavior is consistent across AppShell and StandalonePages.",
+          "Safe-area handling prevents duplicate padding and content obstruction."
+        ]
+      },
+      {
+        "id": "F-21",
+        "name": "Blueprint Automated Validation",
+        "acceptanceCriteria": [
+          "blueprint.json is valid JSON and conforms to the committed JSON Schema.",
+          "All component references exist in ComponentRegistry.registeredComponents.",
+          "All registered routes are unique and declare a supported access level.",
+          "Requirement IDs are unique and every requirement has at least one acceptance criterion.",
+          "Cross-section guest access and safe-area contracts are validated.",
+          "Mock user and product fixtures conform to their committed JSON Schemas.",
+          "Cross-reference and fixture validation runs through a repository validation script.",
+          "A GitHub Actions workflow runs validation on relevant pushes and pull requests.",
+          "Validation failures return a non-zero exit status and actionable error messages."
+        ]
+      },
+      {
+        "id": "F-22",
+        "name": "Mock Data Safety",
+        "acceptanceCriteria": [
+          "mock/user.json contains a Guest fixture and an authenticated phone-and-password fixture.",
+          "User IDs are unique.",
+          "Guest fixtures have no credentials and use the guest auth provider.",
+          "Plaintext passwords are permitted only in explicitly marked mock fixtures.",
+          "Mock credentials are not production authentication credentials.",
+          "mock/products.json contains unique product IDs and consistent tour product structures.",
+          "Placeholder image assets are explicitly identified as mock-only placeholders.",
+          "Mock fixtures are not represented as production data or authoritative transaction records."
+        ]
+      },
+      {
+        "id": "F-23",
+        "name": "Repository Baseline Management",
+        "acceptanceCriteria": [
+          "feature/blueprint-v1 is retained as the source baseline for Blueprint v1.2.0.",
+          "Blueprint v1.3.0 is developed on a dedicated feature branch.",
+          "Unchanged requirements are preserved and version changes are recorded.",
+          "Changes intended for main are reviewed through a pull request.",
+          "Non-mergeable pull requests are investigated before any merge decision.",
+          "Merge requires separate explicit approval.",
+          "Deployment requires separate explicit approval."
+        ]
+      },
+      {
+        "id": "F-24",
+        "name": "Repository Scope Definition",
+        "acceptanceCriteria": [
+          "The repository scope is limited to application Blueprint documents, JSON Schemas, validation tooling, and mock data fixtures.",
+          "The Blueprint describes the mobile-only Travel & Tours application architecture.",
+          "Mock user and product fixtures remain under the mock directory.",
+          "Production React application source code is outside this repository implementation scope.",
+          "Backend, database, authentication-provider, payment-gateway, live-chat, and notification-service integrations are excluded.",
+          "New files must support Blueprint governance, mock data, or automated validation rather than introduce application runtime implementation."
+        ]
+      }
+    ],
+    "previousBaseline": "v1.2.0"
+  },
+  "Scope": {
+    "included": [
+      "application-architecture",
+      "authentication-screen-structure",
+      "guest-entry-flow",
+      "app-shell",
+      "standalone-page-layout",
+      "routing-contract",
+      "bottom-navigation",
+      "design-system",
+      "overlay-architecture",
+      "typescript-production-standards",
+      "component-registry-and-system-state-contracts",
+      "single-active-page-rendering",
+      "route-level-access-policy",
+      "deterministic-session-layout-selection",
+      "centralized-safe-area-ownership",
+      "deterministic-entry-route-resolution",
+      "unified-guest-access-policy",
+      "fail-closed-explicit-route-access-declaration",
+      "dynamic-route-parameter-validation-contract",
+      "route-driven-layout-resolution",
+      "blueprint-json-schema-validation",
+      "mock-data-safety-contract",
+      "automated-blueprint-validation",
+      "repository-baseline-governance"
+    ],
+    "excluded": [
+      "authentication-provider-integration",
+      "booking-backend",
+      "payment-gateway",
+      "database-integration",
+      "live-chat-backend",
+      "notification-service",
+      "react-application-source-code",
+      "production-authentication-credentials",
+      "runtime-application-implementation"
+    ],
+    "deployment": "requires-separate-approval",
+    "merge": "requires-separate-approval"
+  },
+  "ComponentRegistry": {
+    "policy": "every-component-reference-must-exist-in-registeredComponents",
+    "registeredComponents": [
+      "App",
+      "AppLoadingState",
+      "AppShell",
+      "AuthScreen",
+      "BookingConfirmationPage",
+      "BookingDetailPage",
+      "BookingHistoryPage",
+      "BookingPage",
+      "BottomAction",
+      "BottomNav",
+      "BottomSheet",
+      "CheckoutPage",
+      "Content",
+      "DestinationDetailPage",
+      "Drawer",
+      "ExplorePage",
+      "Guest",
+      "Header",
+      "HeaderActions",
+      "HomePage",
+      "LiveChatPage",
+      "Login",
+      "Logo",
+      "Modal",
+      "NotFoundPage",
+      "NotifBtn",
+      "NotificationPage",
+      "Overlays",
+      "ProfileBtn",
+      "ProfilePage",
+      "SearchResultsPage",
+      "StandalonePages",
+      "Toast",
+      "TourDetailPage"
+    ],
+    "systemComponentContracts": {
+      "AppLoadingState": {
+        "responsibility": "present-a-non-interactive-loading-state-while-session-or-initial-route-resolution-is-pending",
+        "props": [
+          "message?"
+        ],
+        "accessibility": "expose-loading-status-to-assistive-technology"
+      },
+      "NotFoundPage": {
+        "responsibility": "present-a-recoverable-state-for-unknown-or-unmatched-routes",
+        "layout": "StandalonePage",
+        "actions": [
+          "NavigateHome",
+          "GoBack"
+        ],
+        "accessibility": "provide-a-clear-page-title-and-named-navigation-actions"
+      }
+    }
+  },
+  "Repository": {
+    "purpose": "blueprint-and-mock-data-governance",
+    "implementationScope": [
+      "blueprint.json",
+      "schemas/",
+      "scripts/validate-blueprint.mjs",
+      ".github/workflows/validate-blueprint.yml",
+      "mock/"
+    ],
+    "excludedRuntimeImplementation": true,
+    "mergeApproval": "separate-explicit-approval",
+    "deploymentApproval": "separate-explicit-approval"
   }
 }

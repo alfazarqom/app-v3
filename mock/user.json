@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "id": "usr_guest_001",
+      "name": "Guest User",
+      "phone": null,
+      "avatarUrl": "https://placehold.co/200x200",
+      "role": "guest",
+      "authProvider": "guest",
+      "isGuest": true,
+      "credentials": null,
+      "status": "active",
+      "preferences": {
+        "language": "id",
+        "currency": "IDR",
+        "notifications": {
+          "email": false,
+          "push": false
+        }
+      },
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "usr_auth_001",
+      "name": "Alex Morgan",
+      "phone": "+6200000000000",
+      "avatarUrl": "https://placehold.co/200x200",
+      "role": "customer",
+      "authProvider": "phone",
+      "isGuest": false,
+      "credentials": {
+        "password": "MockPassword123!"
+      },
+      "status": "active",
+      "preferences": {
+        "language": "id",
+        "currency": "IDR",
+        "notifications": {
+          "email": true,
+          "push": true
+        }
+      },
+      "createdAt": "2026-01-15T08:00:00.000Z",
+      "updatedAt": "2026-01-15T08:00:00.000Z"
+    }
+  ],
+  "fixtureMetadata": {
+    "classification": "mock-only",
+    "notForProduction": true,
+    "passwordStorage": "plaintext-test-fixture-only",
+    "warning": "Credentials in this file are test fixtures and must never be used as production credentials."
+  }
+}
