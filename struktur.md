@@ -28,20 +28,24 @@ App
 │       └── LiveChat
 │
 ├── StandalonePages
-│   ├── DestinationDetailPage
-│   ├── TourDetailPage
-│   ├── SearchResultsPage
-│   ├── BookingPage
-│   ├── CheckoutPage
-│   ├── PaymentPage
-│   ├── PaymentResultPage
-│   ├── BookingDetailPage
-│   ├── EditProfilePage
-│   ├── SettingsPage
-│   ├── HelpCenterPage
-│   ├── ReviewPage
-│   ├── TermsPage
-│   ├── PrivacyPolicyPage
+│   ├── Header
+│   │
+│   ├── Content
+│   │   ├── DestinationDetailPage
+│   │   ├── TourDetailPage
+│   │   ├── SearchResultsPage
+│   │   ├── BookingPage
+│   │   ├── CheckoutPage
+│   │   ├── PaymentPage
+│   │   ├── PaymentResultPage
+│   │   ├── BookingDetailPage
+│   │   ├── EditProfilePage
+│   │   ├── SettingsPage
+│   │   ├── HelpCenterPage
+│   │   ├── ReviewPage
+│   │   ├── TermsPage
+│   │   └── PrivacyPolicyPage
+│   │
 │   └── BottomAction
 │
 └── Overlays
