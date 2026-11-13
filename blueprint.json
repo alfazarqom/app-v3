@@ -8,7 +8,9 @@
     "orientation": "portrait",
     "framework": "React",
     "language": "TypeScript",
-    "documentType": "application-specific-blueprint"
+    "documentType": "application-specific-blueprint",
+    "validationStatus": "production-blueprint-specification",
+    "revision": "1.0.0"
   },
   "App": {
     "component": "App",
@@ -45,6 +47,13 @@
       "action": "ContinueAsGuest",
       "destination": "AppShell",
       "accessPolicy": "public-routes-only"
+    },
+    "layoutSelection": {
+      "strategy": "route-and-session-driven",
+      "authScreen": "when-session-is-unauthenticated",
+      "appShell": "for-authenticated-and-guest-users-on-app-shell-routes",
+      "standalonePages": "for-registered-standalone-page-routes",
+      "unknownRoute": "NotFoundPage"
     }
   },
   "AuthScreen": {
@@ -188,7 +197,13 @@
           "flexShrink": 0
         }
       ],
-      "bottomNav": false
+      "bottomNav": false,
+      "contentOwnership": "page-content-only",
+      "bottomActionBehavior": {
+        "participatesInLayoutFlow": true,
+        "overlaysContent": false,
+        "visibility": "page-defined"
+      }
     },
     "pages": [
       {
@@ -263,6 +278,24 @@
       "guest": "public-routes-only",
       "protectedRoutes": [],
       "protectedRouteBehavior": "redirect-to-auth-screen"
+    },
+    "resolutionOrder": [
+      "resolve-session-state",
+      "match-current-route",
+      "validate-dynamic-route-parameters",
+      "enforce-route-access-policy",
+      "select-page-layout",
+      "render-active-page"
+    ],
+    "routeConflictPolicy": "exact-static-routes-before-dynamic-parameter-routes",
+    "fallback": {
+      "route": "*",
+      "component": "NotFoundPage",
+      "layout": "StandalonePage",
+      "actions": [
+        "NavigateHome",
+        "GoBack"
+      ]
     }
   },
   "Navigation": {
@@ -316,7 +349,13 @@
       }
     ],
     "stateManagement": "centralized",
-    "inactiveInteraction": false
+    "inactiveInteraction": false,
+    "accessibility": {
+      "modalFocusManagement": true,
+      "restoreFocusOnDismiss": true,
+      "escapeDismissalWhenSupported": true,
+      "announceToastNotifications": true
+    }
   },
   "DesignSystem": {
     "style": "Modern Premium Travel",
@@ -370,7 +409,17 @@
       "overlays": {
         "layer": "above-current-layout"
       },
-      "safeArea": true
+      "safeArea": true,
+      "safeAreaPolicy": {
+        "owner": "application-layout",
+        "applyTo": [
+          "Header",
+          "BottomNav",
+          "BottomAction",
+          "edge-aligned-overlays"
+        ],
+        "avoidDuplicateInsets": true
+      }
     },
     "mobile": {
       "referenceWidth": 390,
@@ -407,6 +456,20 @@
       "noHorizontalOverflow": true,
       "productionBuildRequired": true,
       "typecheckRequired": true
+    },
+    "accessibility": {
+      "semanticElements": true,
+      "keyboardAndScreenReaderSupport": true,
+      "accessibleNamesForIconOnlyControls": true,
+      "visibleFocusState": true,
+      "modalFocusTrapAndRestore": true
+    },
+    "validation": {
+      "jsonSyntax": "required",
+      "routeUniqueness": "required",
+      "componentReferenceConsistency": "required",
+      "typescriptStrictTypecheck": "required",
+      "productionBuild": "required"
     }
   },
   "Requirements": {
