@@ -9,8 +9,12 @@
     {
       "type": "AuthScreen",
       "children": [
-        { "type": "Login" },
-        { "type": "Guest" }
+        {
+          "type": "Login"
+        },
+        {
+          "type": "Guest"
+        }
       ]
     },
     {
@@ -19,12 +23,18 @@
         {
           "type": "Header",
           "children": [
-            { "type": "Logo" },
+            {
+              "type": "Logo"
+            },
             {
               "type": "HeaderActions",
               "children": [
-                { "type": "NotifBtn" },
-                { "type": "ProfileBtn" }
+                {
+                  "type": "NotifBtn"
+                },
+                {
+                  "type": "ProfileBtn"
+                }
               ]
             }
           ]
@@ -32,19 +42,35 @@
         {
           "type": "Content",
           "children": [
-            { "type": "HomePage" },
-            { "type": "ExplorePage" },
-            { "type": "LiveChatPage" },
-            { "type": "ProfilePage" },
-            { "type": "NotificationPage" }
+            {
+              "type": "HomePage"
+            },
+            {
+              "type": "ExplorePage"
+            },
+            {
+              "type": "LiveChatPage"
+            },
+            {
+              "type": "ProfilePage"
+            },
+            {
+              "type": "NotificationPage"
+            }
           ]
         },
         {
           "type": "BottomNav",
           "children": [
-            { "type": "Home" },
-            { "type": "Explore" },
-            { "type": "LiveChat" }
+            {
+              "type": "Home"
+            },
+            {
+              "type": "Explore"
+            },
+            {
+              "type": "LiveChat"
+            }
           ]
         }
       ]
@@ -52,40 +78,88 @@
     {
       "type": "StandalonePages",
       "children": [
-        { "type": "Header" },
+        {
+          "type": "Header"
+        },
         {
           "type": "Content",
           "children": [
-            { "type": "DestinationDetailPage" },
-            { "type": "TourDetailPage" },
-            { "type": "SearchResultsPage" },
-            { "type": "BookingPage" },
-            { "type": "CheckoutPage" },
-            { "type": "PaymentPage" },
-            { "type": "PaymentResultPage" },
-            { "type": "BookingDetailPage" },
-            { "type": "EditProfilePage" },
-            { "type": "SettingsPage" },
-            { "type": "HelpCenterPage" },
-            { "type": "ReviewPage" },
-            { "type": "TermsPage" },
-            { "type": "PrivacyPolicyPage" }
+            {
+              "type": "DestinationDetailPage"
+            },
+            {
+              "type": "TourDetailPage"
+            },
+            {
+              "type": "SearchResultsPage"
+            },
+            {
+              "type": "BookingPage"
+            },
+            {
+              "type": "CheckoutPage"
+            },
+            {
+              "type": "PaymentPage"
+            },
+            {
+              "type": "PaymentResultPage"
+            },
+            {
+              "type": "BookingDetailPage"
+            },
+            {
+              "type": "EditProfilePage"
+            },
+            {
+              "type": "SettingsPage"
+            },
+            {
+              "type": "HelpCenterPage"
+            },
+            {
+              "type": "ReviewPage"
+            },
+            {
+              "type": "TermsPage"
+            },
+            {
+              "type": "PrivacyPolicyPage"
+            }
           ]
         },
-        { "type": "BottomAction" }
+        {
+          "type": "BottomAction"
+        }
       ]
     },
     {
       "type": "Overlays",
       "children": [
-        { "type": "NotificationPanel" },
-        { "type": "ProfileMenu" },
-        { "type": "SearchOverlay" },
-        { "type": "Modal" },
-        { "type": "BottomSheet" },
-        { "type": "Toast" },
-        { "type": "LoadingOverlay" }
+        {
+          "type": "NotificationPanel"
+        },
+        {
+          "type": "ProfileMenu"
+        },
+        {
+          "type": "SearchOverlay"
+        },
+        {
+          "type": "Modal"
+        },
+        {
+          "type": "BottomSheet"
+        },
+        {
+          "type": "Toast"
+        },
+        {
+          "type": "LoadingOverlay"
+        }
       ]
     }
-  ]
+  ],
+  "framework": "react",
+  "language": "typescript"
 }
