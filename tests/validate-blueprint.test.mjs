@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { validateContracts } from "../scripts/blueprint-validator-lib.mjs";
+import Ajv2020 from "ajv/dist/2020.js";
 
 const json = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
 const baseline = () => ({ blueprint: json("../blueprint.json"), users: json("../mock/user.json"), products: json("../mock/products.json") });
@@ -44,4 +45,25 @@ test("rejects product remaining capacity above total capacity", () => {
   const data = baseline();
   data.products.products[0].availability.remaining = data.products.products[0].availability.capacity + 1;
   assert.ok(validateContracts(data).some((error) => error.includes("capacity/remaining")));
+});
+
+test("JSON Schemas accept the committed valid fixtures", () => {
+  const ajv = new Ajv2020({ allErrors: true });
+  const validateUsers = ajv.compile(json("../schemas/mock-user.schema.json"));
+  const validateProducts = ajv.compile(json("../schemas/mock-products.schema.json"));
+  const data = baseline();
+  assert.equal(validateUsers(data.users), true);
+  assert.equal(validateProducts(data.products), true);
+});
+
+test("JSON Schemas reject unknown user fields and invalid product ratings", () => {
+  const ajv = new Ajv2020({ allErrors: true });
+  const validateUsers = ajv.compile(json("../schemas/mock-user.schema.json"));
+  const validateProducts = ajv.compile(json("../schemas/mock-products.schema.json"));
+  const data = baseline();
+  data.users.users[0].unexpected = true;
+  assert.equal(validateUsers(data.users), false);
+  const invalidProducts = baseline().products;
+  invalidProducts.products[0].rating.average = 5.1;
+  assert.equal(validateProducts(invalidProducts), false);
 });
