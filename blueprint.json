@@ -1011,70 +1011,6 @@
           "Workflow permissions are restricted to the minimum required read access.",
           "CI results are associated with the exact commit SHA under test."
         ]
-      },
-      {
-        "id": "F-25",
-        "name": "Route Access & Booking Ownership",
-        "acceptanceCriteria": [
-          "Booking history and detail are not publicly accessible without owner verification.",
-          "Authenticated users can read only bookings whose owner identity matches the authenticated user.",
-          "Guest users can read only their own bookings after backend verification of a guest booking proof.",
-          "Backend ownership verification is enforced on every request that reads booking data.",
-          "Cross-user and invalid guest-proof requests are denied before private booking data is disclosed.",
-          "Profile and notification routes require authenticated access.",
-          "Booking creation, checkout, and booking confirmation continue to support guest access."
-        ]
-      },
-      {
-        "id": "F-26",
-        "name": "JSON Schema Hardening",
-        "acceptanceCriteria": [
-          "Finalized schema objects reject unknown properties where their contracts are explicitly defined.",
-          "User role and status values are restricted to documented enums.",
-          "Guest fixtures require role guest, guest auth provider, null phone, and null credentials.",
-          "Authenticated phone fixtures require role customer, phone auth provider, valid international phone format, and a non-empty password fixture.",
-          "Product rating average is constrained to 0 through 5 and rating count is non-negative.",
-          "Product price, duration, availability, capacity, and remaining values have explicit types and valid bounds.",
-          "Schema validation accepts existing valid fixtures and rejects invalid contract values."
-        ]
-      },
-      {
-        "id": "F-27",
-        "name": "Cross-File Validation",
-        "acceptanceCriteria": [
-          "Requirement IDs are exactly F-01 through F-29 with no missing or duplicate IDs.",
-          "Every BottomNav item route resolves to a registered AppShell route.",
-          "Dynamic route parameter declarations exactly match parameters in route templates.",
-          "Page IDs are unique across AppShell and StandalonePages page declarations.",
-          "User role, status, authProvider, isGuest, phone, and credentials are mutually consistent.",
-          "Product IDs and slugs are unique.",
-          "Product capacity and remaining values are non-negative and remaining never exceeds capacity.",
-          "Validator failures return a non-zero exit status and actionable diagnostics."
-        ]
-      },
-      {
-        "id": "F-28",
-        "name": "Mock Credential Safety",
-        "acceptanceCriteria": [
-          "Mock credentials are explicitly classified as fixture-only and prohibited for production use.",
-          "Plaintext passwords remain limited to test fixtures and are never treated as production authentication credentials.",
-          "Repository documentation states that production authentication must use a backend identity provider, not mock/user.json.",
-          "Future production runtime code must not import mock fixtures as an authentication source.",
-          "Guest and authenticated fixtures remain available for local contract tests."
-        ]
-      },
-      {
-        "id": "F-29",
-        "name": "CI Reproducibility & Test Coverage",
-        "acceptanceCriteria": [
-          "Validator dependencies are declared with exact versions and committed in package-lock.json.",
-          "GitHub Actions third-party actions are pinned to full commit SHAs.",
-          "CI installs dependencies using npm ci and runs schema and cross-file validation.",
-          "Positive tests verify valid baseline fixtures and contracts.",
-          "Negative tests verify malformed requirements, navigation routes, dynamic parameters, ownership policies, user fixtures, and product capacity constraints are rejected.",
-          "Workflow permissions are restricted to the minimum required read access.",
-          "CI results are associated with the exact commit SHA under test."
-        ]
       }
     ],
     "previousBaseline": "v1.3.0"
@@ -1183,9 +1119,13 @@
     "implementationScope": [
       "blueprint.json",
       "schemas/",
-      "scripts/validate-blueprint.mjs",
+      "scripts/",
+      "tests/",
+      "mock/",
+      "package.json",
+      "package-lock.json",
       ".github/workflows/validate-blueprint.yml",
-      "mock/"
+      "docs/mock-credential-policy.md"
     ],
     "excludedRuntimeImplementation": true,
     "mergeApproval": "separate-explicit-approval",
